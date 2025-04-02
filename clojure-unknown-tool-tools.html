@@ -477,19 +477,31 @@
       </a>
       <nav id="menu">
         <ul>
-<li><a class="active" href="index.html">index</a></li>
+<li><a class="" href="index.html">index</a></li>
 <li><a class="" href="asgi-dispatcher-middleware.html">asgi dispatcher middleware</a></li>
-<li><a class="" href="clojure-unknown-tool-tools.html">clojure unknown tool tools</a></li>
+<li><a class="active" href="clojure-unknown-tool-tools.html">clojure unknown tool tools</a></li>
 <li><a class="" href="mongodb-mass-removing-nested-array-element-property.html">mongodb mass removing nested array element property</a></li>
 <li><a class="" href="python-pydantic-unprintable-validationerror-object.html">python pydantic unprintable validationerror object</a></li>
 <li><a class="" href="xfce4-slock-red-screen.html">xfce4 slock red screen</a></li>
 </ul>
       </nav>
       <article id="main" class="content">
-        <h1 id="welcome-to-this-notebook!">Welcome to this notebook! <a class="heading-anchor-permalink" href="#welcome-to-this-notebook!">#</a></h1>
-<p>Here I write notes about obscure or forgettable issues I commonly have to deal with.</p>
-<hr>
-<iframe src="https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123"></iframe>
+        <h1 id="unknown-tool%3A-tools">Unknown tool: tools <a class="heading-anchor-permalink" href="#unknown-tool%3A-tools">#</a></h1>
+<p>Commonly presents as an error during an attempt to add Sean Corfield’s “new” like so</p>
+<pre><code>clojure -Ttools install com.github.seancorfield/clj-new '{:git/tag &quot;v1.2.381&quot;}' :as new
+</code></pre>
+<p>and the error</p>
+<p><code>Error building classpath. Unknown tool: tools</code></p>
+<h3 id="solution">Solution <a class="heading-anchor-permalink" href="#solution">#</a></h3>
+<iframe src="https://microads.ix.tc/api/ads/delivery-node/direct?nonce=abc123	"></iframe>
+<p>(<a href="https://clojurians-log.clojureverse.org/clj-on-windows/2022-09-01">https://clojurians-log.clojureverse.org/clj-on-windows/2022-09-01</a>) is to create <code>~/.clojure/tools/tools.edn</code> and add in</p>
+<pre><code>{:lib io.github.clojure/tools.tools
+ :coord {:git/tag &quot;v0.2.8&quot;
+         :git/sha &quot;9c5baa56cff02de98737a71d4dab098b268cd68b&quot;}}
+
+</code></pre>
+<p>or newer before re-running.</p>
+
       </article>
     </div>
     <script>

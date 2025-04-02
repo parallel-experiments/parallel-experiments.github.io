@@ -477,19 +477,46 @@
       </a>
       <nav id="menu">
         <ul>
-<li><a class="active" href="index.html">index</a></li>
+<li><a class="" href="index.html">index</a></li>
 <li><a class="" href="asgi-dispatcher-middleware.html">asgi dispatcher middleware</a></li>
 <li><a class="" href="clojure-unknown-tool-tools.html">clojure unknown tool tools</a></li>
 <li><a class="" href="mongodb-mass-removing-nested-array-element-property.html">mongodb mass removing nested array element property</a></li>
-<li><a class="" href="python-pydantic-unprintable-validationerror-object.html">python pydantic unprintable validationerror object</a></li>
+<li><a class="active" href="python-pydantic-unprintable-validationerror-object.html">python pydantic unprintable validationerror object</a></li>
 <li><a class="" href="xfce4-slock-red-screen.html">xfce4 slock red screen</a></li>
 </ul>
       </nav>
       <article id="main" class="content">
-        <h1 id="welcome-to-this-notebook!">Welcome to this notebook! <a class="heading-anchor-permalink" href="#welcome-to-this-notebook!">#</a></h1>
-<p>Here I write notes about obscure or forgettable issues I commonly have to deal with.</p>
-<hr>
+        <h1 id="pydantic-validationerror-with-unprintable-validationerror-object">Pydantic ValidationError with unprintable ValidationError object <a class="heading-anchor-permalink" href="#pydantic-validationerror-with-unprintable-validationerror-object">#</a></h1>
+<p>In some cases (NOT always), using Pydantic in a Python project will fail with an “unprintable” validation error, resulting in stack breaking with an exception similar to</p>
+<pre><code>pydantic.error_wrappers.ValidationError: &lt;unprintable ValidationError object&gt;
+</code></pre>
+<p>and while I couldn’t find the time to exactly find what causes this and how to handle it elegantly;</p>
+<h3 id="solution">Solution <a class="heading-anchor-permalink" href="#solution">#</a></h3>
 <iframe src="https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123"></iframe>
+<p>a quick solution that I found is to try to instantiate some or any of the Pydantic types as early as possible.
+In other words, this problem arises when</p>
+<pre><code class="language-python">from pydantic import BaseModel
+
+class B(BaseModel):
+    some_property: int
+
+class A(BaseModel):
+    b: B
+
+def example() -&gt; A:
+    b = {&quot;another_property&quot;: None}
+    return A(**{&quot;b&quot;: b}) # =&gt; raises an &quot;unprintable&quot; ValidationError with no extra info
+</code></pre>
+<p>meaning that validating inner types earlier like so</p>
+<pre><code class="language-python">
+def example() -&gt; A:
+    b = {&quot;another_property&quot;: None}
+    B(**b) # =&gt; raises a &quot;printable&quot; ValidationError, b.some_property # Field required [type=missing, input_value={'another_property': None}, input_type=dict]
+
+    return A(**{&quot;b&quot;: b})
+</code></pre>
+<p>is a sensible approach to avoiding this type of issue.</p>
+
       </article>
     </div>
     <script>
