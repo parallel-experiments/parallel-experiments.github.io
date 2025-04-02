@@ -477,19 +477,25 @@
       </a>
       <nav id="menu">
         <ul>
-<li><a class="active" href="index.html">index</a></li>
+<li><a class="" href="index.html">index</a></li>
 <li><a class="" href="asgi-dispatcher-middleware.html">asgi dispatcher middleware</a></li>
 <li><a class="" href="clojure-unknown-tool-tools.html">clojure unknown tool tools</a></li>
-<li><a class="" href="mongodb-mass-removing-nested-array-element-property.html">mongodb mass removing nested array element property</a></li>
+<li><a class="active" href="mongodb-mass-removing-nested-array-element-property.html">mongodb mass removing nested array element property</a></li>
 <li><a class="" href="python-pydantic-unprintable-validationerror-object.html">python pydantic unprintable validationerror object</a></li>
 <li><a class="" href="xfce4-slock-red-screen.html">xfce4 slock red screen</a></li>
 </ul>
       </nav>
       <article id="main" class="content">
-        <h1 id="welcome-to-this-notebook!">Welcome to this notebook! <a class="heading-anchor-permalink" href="#welcome-to-this-notebook!">#</a></h1>
-<p>Here I write notes about obscure or forgettable issues I commonly have to deal with.</p>
-<hr>
+        <h1 id="mass-removing-a-property-from-an-object-that%E2%80%99s-an-element-in-an-array-property">Mass removing a property from an object that’s an element in an array property <a class="heading-anchor-permalink" href="#mass-removing-a-property-from-an-object-that%E2%80%99s-an-element-in-an-array-property">#</a></h1>
+<p>Noting this case because finding a solution or docs on it is not easy and the functionality is not discoverable. I myself forgot about it and had to re-find it a couple of times.</p>
+<p>Scenario is when a document has a <code>.things</code> property that’s an array of objects, and one of the properties (e.g. <code>.things[].stuff</code> has to be mass removed.
+Unsetting the nested property by doing an <code>updateOne(lookup, {$unset: {&quot;things.stuff&quot;: 1}})</code> or <code>$unset: {&quot;things.$.stuff&quot;: 1}</code> does not work.</p>
+<h3 id="solution">Solution <a class="heading-anchor-permalink" href="#solution">#</a></h3>
 <iframe src="https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123"></iframe>
+<p>As seen here <a href="https://www.mongodb.com/docs/manual/reference/operator/update/positional-all/">https://www.mongodb.com/docs/manual/reference/operator/update/positional-all/</a></p>
+<p>The “all positional operator”, <code>$[]</code> indicates that the update operator should modify all elements in the specified array field.
+Doing <code>updateOne(lookup, {$unset: {&quot;things.$[].stuff&quot;: 1}})</code> will successfully clean out the property from objects in the document’s <code>.things</code> array.</p>
+
       </article>
     </div>
     <script>
