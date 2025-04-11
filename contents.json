@@ -18,6 +18,10 @@
     },
     {
       "type": "file",
+      "value": "needlestack.md"
+    },
+    {
+      "type": "file",
       "value": "python-pydantic-unprintable-validationerror-object.md"
     },
     {
@@ -55,18 +59,25 @@
       "id": 3
     },
     {
+      "path": "needlestack.md",
+      "url": "needlestack.html",
+      "content": "Here I put links to all the amazing things I've read.\n\n## Contents\n\n- Programming\n  - Ruby\n\n## Programming\n\nAll about programming.\n\n### Ruby\n\n- https://morningcoffee.io/interfaces-in-ruby.html excellent article about using unit tests to enforce expected behaviors instead of interfaces-as-a-language-feature (think Java interfaces etc)\n\n",
+      "html": "<p>Here I put links to all the amazing things I’ve read.</p>\n<h2 id=\"contents\">Contents <a class=\"heading-anchor-permalink\" href=\"#contents\">#</a></h2>\n<ul>\n<li>Programming\n<ul>\n<li>Ruby</li>\n</ul>\n</li>\n</ul>\n<h2 id=\"programming\">Programming <a class=\"heading-anchor-permalink\" href=\"#programming\">#</a></h2>\n<p>All about programming.</p>\n<h3 id=\"ruby\">Ruby <a class=\"heading-anchor-permalink\" href=\"#ruby\">#</a></h3>\n<ul>\n<li><a href=\"https://morningcoffee.io/interfaces-in-ruby.html\">https://morningcoffee.io/interfaces-in-ruby.html</a> excellent article about using unit tests to enforce expected behaviors instead of interfaces-as-a-language-feature (think Java interfaces etc)</li>\n</ul>\n",
+      "id": 4
+    },
+    {
       "path": "python-pydantic-unprintable-validationerror-object.md",
       "url": "python-pydantic-unprintable-validationerror-object.html",
       "content": "# Pydantic ValidationError with unprintable ValidationError object\n\nIn some cases (NOT always), using Pydantic in a Python project will fail with an \"unprintable\" validation error, resulting in stack breaking with an exception similar to\n\n```\npydantic.error_wrappers.ValidationError: <unprintable ValidationError object>\n```\n\nand while I couldn't find the time to exactly find what causes this and how to handle it elegantly;\n\n### Solution\n\n<iframe src=\"https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123\"></iframe>\n\na quick solution that I found is to try to instantiate some or any of the Pydantic types as early as possible.\nIn other words, this problem arises when\n\n```python\nfrom pydantic import BaseModel\n\nclass B(BaseModel):\n    some_property: int\n\nclass A(BaseModel):\n    b: B\n\ndef example() -> A:\n    b = {\"another_property\": None}\n    return A(**{\"b\": b}) # => raises an \"unprintable\" ValidationError with no extra info\n```\n\nmeaning that validating inner types earlier like so\n\n```python\n\ndef example() -> A:\n    b = {\"another_property\": None}\n    B(**b) # => raises a \"printable\" ValidationError, b.some_property # Field required [type=missing, input_value={'another_property': None}, input_type=dict]\n\n    return A(**{\"b\": b})\n```\n\nis a sensible approach to avoiding this type of issue.\n",
       "html": "<h1 id=\"pydantic-validationerror-with-unprintable-validationerror-object\">Pydantic ValidationError with unprintable ValidationError object <a class=\"heading-anchor-permalink\" href=\"#pydantic-validationerror-with-unprintable-validationerror-object\">#</a></h1>\n<p>In some cases (NOT always), using Pydantic in a Python project will fail with an “unprintable” validation error, resulting in stack breaking with an exception similar to</p>\n<pre><code>pydantic.error_wrappers.ValidationError: &lt;unprintable ValidationError object&gt;\n</code></pre>\n<p>and while I couldn’t find the time to exactly find what causes this and how to handle it elegantly;</p>\n<h3 id=\"solution\">Solution <a class=\"heading-anchor-permalink\" href=\"#solution\">#</a></h3>\n<iframe src=\"https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123\"></iframe>\n<p>a quick solution that I found is to try to instantiate some or any of the Pydantic types as early as possible.\nIn other words, this problem arises when</p>\n<pre><code class=\"language-python\">from pydantic import BaseModel\n\nclass B(BaseModel):\n    some_property: int\n\nclass A(BaseModel):\n    b: B\n\ndef example() -&gt; A:\n    b = {&quot;another_property&quot;: None}\n    return A(**{&quot;b&quot;: b}) # =&gt; raises an &quot;unprintable&quot; ValidationError with no extra info\n</code></pre>\n<p>meaning that validating inner types earlier like so</p>\n<pre><code class=\"language-python\">\ndef example() -&gt; A:\n    b = {&quot;another_property&quot;: None}\n    B(**b) # =&gt; raises a &quot;printable&quot; ValidationError, b.some_property # Field required [type=missing, input_value={'another_property': None}, input_type=dict]\n\n    return A(**{&quot;b&quot;: b})\n</code></pre>\n<p>is a sensible approach to avoiding this type of issue.</p>\n",
-      "id": 4
+      "id": 5
     },
     {
       "path": "xfce4-slock-red-screen.md",
       "url": "xfce4-slock-red-screen.html",
       "content": "# XFCE4 red screen screen lock with slock\n\nXFCE4 uses slock as a default screen locker (in scenarios when a screensaver is disabled I think) and slock has this problem where it will show a blank red (sometimes blue?) screen which you cannot bypass.\nA workaround for me personally was to keep connecting to other TTYs on the same machine (laptop), authenticate there then `killall slock`.\n\nAs an additional consequence despite having \"Lock screen when system is going to sleep\" option toggled ON in XFCE power manager this slock issue would not resume to an auth wall but go back to the session, ultimately defeating the purpose of having a lock screen.\n\n### Solution\n\n<iframe src=\"https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123\"></iframe>\n\nUsually setting a screensaver or basically anything to prevent slock from running is the least painful option.\nYou can for example install a lock \"ABCXYZlock\" and run\n\n```bash\nxfconf-query -c xfce4-session -p /general/LockCommand -s \"ABCXYZlock\"\n```\n\nwhich will *immediately* switch to using your preferred lock mechanism instead of slock.",
       "html": "<h1 id=\"xfce4-red-screen-screen-lock-with-slock\">XFCE4 red screen screen lock with slock <a class=\"heading-anchor-permalink\" href=\"#xfce4-red-screen-screen-lock-with-slock\">#</a></h1>\n<p>XFCE4 uses slock as a default screen locker (in scenarios when a screensaver is disabled I think) and slock has this problem where it will show a blank red (sometimes blue?) screen which you cannot bypass.\nA workaround for me personally was to keep connecting to other TTYs on the same machine (laptop), authenticate there then <code>killall slock</code>.</p>\n<p>As an additional consequence despite having “Lock screen when system is going to sleep” option toggled ON in XFCE power manager this slock issue would not resume to an auth wall but go back to the session, ultimately defeating the purpose of having a lock screen.</p>\n<h3 id=\"solution\">Solution <a class=\"heading-anchor-permalink\" href=\"#solution\">#</a></h3>\n<iframe src=\"https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123\"></iframe>\n<p>Usually setting a screensaver or basically anything to prevent slock from running is the least painful option.\nYou can for example install a lock “ABCXYZlock” and run</p>\n<pre><code class=\"language-bash\">xfconf-query -c xfce4-session -p /general/LockCommand -s &quot;ABCXYZlock&quot;\n</code></pre>\n<p>which will <em>immediately</em> switch to using your preferred lock mechanism instead of slock.</p>\n",
-      "id": 5
+      "id": 6
     }
   ]
 }
