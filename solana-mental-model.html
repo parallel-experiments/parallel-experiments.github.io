@@ -477,21 +477,38 @@
       </a>
       <nav id="menu">
         <ul>
-<li><a class="active" href="index.html">index</a></li>
+<li><a class="" href="index.html">index</a></li>
 <li><a class="" href="asgi-dispatcher-middleware.html">asgi dispatcher middleware</a></li>
 <li><a class="" href="clojure-unknown-tool-tools.html">clojure unknown tool tools</a></li>
 <li><a class="" href="mongodb-mass-removing-nested-array-element-property.html">mongodb mass removing nested array element property</a></li>
 <li><a class="" href="needlestack.html">needlestack</a></li>
 <li><a class="" href="python-pydantic-unprintable-validationerror-object.html">python pydantic unprintable validationerror object</a></li>
-<li><a class="" href="solana-mental-model.html">solana mental model</a></li>
+<li><a class="active" href="solana-mental-model.html">solana mental model</a></li>
 <li><a class="" href="xfce4-slock-red-screen.html">xfce4 slock red screen</a></li>
 </ul>
       </nav>
       <article id="main" class="content">
-        <h1 id="welcome-to-this-notebook!">Welcome to this notebook! <a class="heading-anchor-permalink" href="#welcome-to-this-notebook!">#</a></h1>
-<p>Here I write notes about obscure or forgettable issues I commonly have to deal with.</p>
-<hr>
-<iframe src="https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123"></iframe>
+        <h1 id="solana-mental-model">Solana mental model <a class="heading-anchor-permalink" href="#solana-mental-model">#</a></h1>
+<p>This post, like most others, is primarily a note to self so I don’t forget again.</p>
+<p>See I’m doing a hobby project which interacts with Solana and it’s sizeable enough for a single developer to work on one part of it for quite a while before moving to another part. Recently I finished some things and came back to the parts of the project which talk to Solana…</p>
+<p>Solana information landscape is, well, good enough. Like anything else it will take some time to get acquainted with how Solana behaves and how you should behave when interfacing with it. If you’re used to this - to you - it doesn’t seem like a big deal.</p>
+<p>HOWEVER the developer documentation and all the surrounding information like guides and tutorials didn’t really help me rediscover all the concepts I’d already learned and understood like half a year ago.</p>
+<blockquote>
+<p>Note: Keep in mind it might be just that my capacity is limited, or perhaps I didn’t really understand the concepts and I just got it to work good enough™</p>
+</blockquote>
+<h2 id="solana-is-instructions-and-instructions-are-interfaces">Solana is instructions and instructions are interfaces <a class="heading-anchor-permalink" href="#solana-is-instructions-and-instructions-are-interfaces">#</a></h2>
+<p>It’s just bags of interfaces, and more nuanced concepts/abstractions are just shortcuts to groups of these interfaces;</p>
+<ol>
+<li>you could call them functions if you want to draw a parallel with a library of some kind or with an ABI</li>
+<li>you could call them statements if you want to draw a parallel to SQL</li>
+<li>you could call them endpoints if you want to draw a parallel with an http API</li>
+</ol>
+<p>and in a way the parallels will work.</p>
+<p>Some of these sometimes also provide some kind of support for putting a group of interfacings (noun, plural) together - be it function calls (pt 1), statements (pt 2), or endpoints(pt 3)* - into a single “transaction” to be executed (and rolled back on failure).</p>
+<p>Same with Solana interfacings (instructions).</p>
+<p>Interfacings/instructions to handle tokens are provided by the SPL Token program, for example, and executing a series of transactions with instructions to tell the chain that some token exists and some wallet has control of it is how tokens are create.</p>
+<p>But you can write your own also. More on this later.</p>
+
       </article>
     </div>
     <script>
