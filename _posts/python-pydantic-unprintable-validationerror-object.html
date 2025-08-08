@@ -482,23 +482,44 @@
 <li><a class="" href="clojure-unknown-tool-tools.html">clojure unknown tool tools</a></li>
 <li><a class="" href="mongodb-mass-removing-nested-array-element-property.html">mongodb mass removing nested array element property</a></li>
 <li><a class="" href="needlestack.html">needlestack</a></li>
-<li><a class="" href="python-pydantic-unprintable-validationerror-object.html">python pydantic unprintable validationerror object</a></li>
+<li><a class="active" href="python-pydantic-unprintable-validationerror-object.html">python pydantic unprintable validationerror object</a></li>
+<li><a class="" href="routing-pattern-for-html6-htmx-applications.html">routing pattern for html6 htmx applications</a></li>
 <li><a class="" href="solana-mental-model.html">solana mental model</a></li>
-<li><a class="active" href="xfce4-slock-red-screen.html">xfce4 slock red screen</a></li>
+<li><a class="" href="xfce4-slock-red-screen.html">xfce4 slock red screen</a></li>
+<li><a class="" href="xinput-synaptics-disable-while-typing.html">xinput synaptics disable while typing</a></li>
 </ul>
       </nav>
       <article id="main" class="content">
-        <h1 id="xfce4-red-screen-screen-lock-with-slock">XFCE4 red screen screen lock with slock <a class="heading-anchor-permalink" href="#xfce4-red-screen-screen-lock-with-slock">#</a></h1>
-<p>XFCE4 uses slock as a default screen locker (in scenarios when a screensaver is disabled I think) and slock has this problem where it will show a blank red (sometimes blue?) screen which you cannot bypass.
-A workaround for me personally was to keep connecting to other TTYs on the same machine (laptop), authenticate there then <code>killall slock</code>.</p>
-<p>As an additional consequence despite having “Lock screen when system is going to sleep” option toggled ON in XFCE power manager this slock issue would not resume to an auth wall but go back to the session, ultimately defeating the purpose of having a lock screen.</p>
+        <h1 id="pydantic-validationerror-with-unprintable-validationerror-object">Pydantic ValidationError with unprintable ValidationError object <a class="heading-anchor-permalink" href="#pydantic-validationerror-with-unprintable-validationerror-object">#</a></h1>
+<p>In some cases (NOT always), using Pydantic in a Python project will fail with an “unprintable” validation error, resulting in stack breaking with an exception similar to</p>
+<pre><code>pydantic.error_wrappers.ValidationError: &lt;unprintable ValidationError object&gt;
+</code></pre>
+<p>and while I couldn’t find the time to exactly find what causes this and how to handle it elegantly;</p>
 <h3 id="solution">Solution <a class="heading-anchor-permalink" href="#solution">#</a></h3>
 <iframe src="https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123"></iframe>
-<p>Usually setting a screensaver or basically anything to prevent slock from running is the least painful option.
-You can for example install a lock “ABCXYZlock” and run</p>
-<pre><code class="language-bash">xfconf-query -c xfce4-session -p /general/LockCommand -s &quot;ABCXYZlock&quot;
+<p>a quick solution that I found is to try to instantiate some or any of the Pydantic types as early as possible.
+In other words, this problem arises when</p>
+<pre><code class="language-python">from pydantic import BaseModel
+
+class B(BaseModel):
+    some_property: int
+
+class A(BaseModel):
+    b: B
+
+def example() -&gt; A:
+    b = {&quot;another_property&quot;: None}
+    return A(**{&quot;b&quot;: b}) # =&gt; raises an &quot;unprintable&quot; ValidationError with no extra info
 </code></pre>
-<p>which will <em>immediately</em> switch to using your preferred lock mechanism instead of slock.</p>
+<p>meaning that validating inner types earlier like so</p>
+<pre><code class="language-python">
+def example() -&gt; A:
+    b = {&quot;another_property&quot;: None}
+    B(**b) # =&gt; raises a &quot;printable&quot; ValidationError, b.some_property # Field required [type=missing, input_value={'another_property': None}, input_type=dict]
+
+    return A(**{&quot;b&quot;: b})
+</code></pre>
+<p>is a sensible approach to avoiding this type of issue.</p>
 
       </article>
     </div>

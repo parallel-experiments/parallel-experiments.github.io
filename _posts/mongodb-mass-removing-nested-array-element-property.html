@@ -480,44 +480,25 @@
 <li><a class="" href="index.html">index</a></li>
 <li><a class="" href="asgi-dispatcher-middleware.html">asgi dispatcher middleware</a></li>
 <li><a class="" href="clojure-unknown-tool-tools.html">clojure unknown tool tools</a></li>
-<li><a class="" href="mongodb-mass-removing-nested-array-element-property.html">mongodb mass removing nested array element property</a></li>
+<li><a class="active" href="mongodb-mass-removing-nested-array-element-property.html">mongodb mass removing nested array element property</a></li>
 <li><a class="" href="needlestack.html">needlestack</a></li>
-<li><a class="active" href="python-pydantic-unprintable-validationerror-object.html">python pydantic unprintable validationerror object</a></li>
+<li><a class="" href="python-pydantic-unprintable-validationerror-object.html">python pydantic unprintable validationerror object</a></li>
+<li><a class="" href="routing-pattern-for-html6-htmx-applications.html">routing pattern for html6 htmx applications</a></li>
 <li><a class="" href="solana-mental-model.html">solana mental model</a></li>
 <li><a class="" href="xfce4-slock-red-screen.html">xfce4 slock red screen</a></li>
+<li><a class="" href="xinput-synaptics-disable-while-typing.html">xinput synaptics disable while typing</a></li>
 </ul>
       </nav>
       <article id="main" class="content">
-        <h1 id="pydantic-validationerror-with-unprintable-validationerror-object">Pydantic ValidationError with unprintable ValidationError object <a class="heading-anchor-permalink" href="#pydantic-validationerror-with-unprintable-validationerror-object">#</a></h1>
-<p>In some cases (NOT always), using Pydantic in a Python project will fail with an “unprintable” validation error, resulting in stack breaking with an exception similar to</p>
-<pre><code>pydantic.error_wrappers.ValidationError: &lt;unprintable ValidationError object&gt;
-</code></pre>
-<p>and while I couldn’t find the time to exactly find what causes this and how to handle it elegantly;</p>
+        <h1 id="mass-removing-a-property-from-an-object-that%E2%80%99s-an-element-in-an-array-property">Mass removing a property from an object that’s an element in an array property <a class="heading-anchor-permalink" href="#mass-removing-a-property-from-an-object-that%E2%80%99s-an-element-in-an-array-property">#</a></h1>
+<p>Noting this case because finding a solution or docs on it is not easy and the functionality is not discoverable. I myself forgot about it and had to re-find it a couple of times.</p>
+<p>Scenario is when a document has a <code>.things</code> property that’s an array of objects, and one of the properties (e.g. <code>.things[].stuff</code> has to be mass removed.
+Unsetting the nested property by doing an <code>updateOne(lookup, {$unset: {&quot;things.stuff&quot;: 1}})</code> or <code>$unset: {&quot;things.$.stuff&quot;: 1}</code> does not work.</p>
 <h3 id="solution">Solution <a class="heading-anchor-permalink" href="#solution">#</a></h3>
 <iframe src="https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123"></iframe>
-<p>a quick solution that I found is to try to instantiate some or any of the Pydantic types as early as possible.
-In other words, this problem arises when</p>
-<pre><code class="language-python">from pydantic import BaseModel
-
-class B(BaseModel):
-    some_property: int
-
-class A(BaseModel):
-    b: B
-
-def example() -&gt; A:
-    b = {&quot;another_property&quot;: None}
-    return A(**{&quot;b&quot;: b}) # =&gt; raises an &quot;unprintable&quot; ValidationError with no extra info
-</code></pre>
-<p>meaning that validating inner types earlier like so</p>
-<pre><code class="language-python">
-def example() -&gt; A:
-    b = {&quot;another_property&quot;: None}
-    B(**b) # =&gt; raises a &quot;printable&quot; ValidationError, b.some_property # Field required [type=missing, input_value={'another_property': None}, input_type=dict]
-
-    return A(**{&quot;b&quot;: b})
-</code></pre>
-<p>is a sensible approach to avoiding this type of issue.</p>
+<p>As seen here <a href="https://www.mongodb.com/docs/manual/reference/operator/update/positional-all/">https://www.mongodb.com/docs/manual/reference/operator/update/positional-all/</a></p>
+<p>The “all positional operator”, <code>$[]</code> indicates that the update operator should modify all elements in the specified array field.
+Doing <code>updateOne(lookup, {$unset: {&quot;things.$[].stuff&quot;: 1}})</code> will successfully clean out the property from objects in the document’s <code>.things</code> array.</p>
 
       </article>
     </div>

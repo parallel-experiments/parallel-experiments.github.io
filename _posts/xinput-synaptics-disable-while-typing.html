@@ -480,23 +480,48 @@
 <li><a class="" href="index.html">index</a></li>
 <li><a class="" href="asgi-dispatcher-middleware.html">asgi dispatcher middleware</a></li>
 <li><a class="" href="clojure-unknown-tool-tools.html">clojure unknown tool tools</a></li>
-<li><a class="active" href="mongodb-mass-removing-nested-array-element-property.html">mongodb mass removing nested array element property</a></li>
+<li><a class="" href="mongodb-mass-removing-nested-array-element-property.html">mongodb mass removing nested array element property</a></li>
 <li><a class="" href="needlestack.html">needlestack</a></li>
 <li><a class="" href="python-pydantic-unprintable-validationerror-object.html">python pydantic unprintable validationerror object</a></li>
+<li><a class="" href="routing-pattern-for-html6-htmx-applications.html">routing pattern for html6 htmx applications</a></li>
 <li><a class="" href="solana-mental-model.html">solana mental model</a></li>
 <li><a class="" href="xfce4-slock-red-screen.html">xfce4 slock red screen</a></li>
+<li><a class="active" href="xinput-synaptics-disable-while-typing.html">xinput synaptics disable while typing</a></li>
 </ul>
       </nav>
       <article id="main" class="content">
-        <h1 id="mass-removing-a-property-from-an-object-that%E2%80%99s-an-element-in-an-array-property">Mass removing a property from an object that’s an element in an array property <a class="heading-anchor-permalink" href="#mass-removing-a-property-from-an-object-that%E2%80%99s-an-element-in-an-array-property">#</a></h1>
-<p>Noting this case because finding a solution or docs on it is not easy and the functionality is not discoverable. I myself forgot about it and had to re-find it a couple of times.</p>
-<p>Scenario is when a document has a <code>.things</code> property that’s an array of objects, and one of the properties (e.g. <code>.things[].stuff</code> has to be mass removed.
-Unsetting the nested property by doing an <code>updateOne(lookup, {$unset: {&quot;things.stuff&quot;: 1}})</code> or <code>$unset: {&quot;things.$.stuff&quot;: 1}</code> does not work.</p>
-<h3 id="solution">Solution <a class="heading-anchor-permalink" href="#solution">#</a></h3>
+        <h1 id="touchpad-stops-working-when-a-key-is-pressed%2Fheld">Touchpad stops working when a key is pressed/held <a class="heading-anchor-permalink" href="#touchpad-stops-working-when-a-key-is-pressed%2Fheld">#</a></h1>
+<p>I’ve seen this happen on various machines and various Linux distros and I keep forgetting the exact way to control the behavior, so a blog post is due.</p>
+<p>Essentially on an Xorg setup the default behavior for touchpads is to stop pointer activity as soon as a keyboard button is pressed or held.</p>
+<p>If for example you wanted to relax a bit and play an Openarena match, you will quickly discover that when you use WASD to move in-game, the touchpad gets “locked” and you cannot look around … until you stop moving.</p>
+<h2 id="solution">Solution <a class="heading-anchor-permalink" href="#solution">#</a></h2>
 <iframe src="https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123"></iframe>
-<p>As seen here <a href="https://www.mongodb.com/docs/manual/reference/operator/update/positional-all/">https://www.mongodb.com/docs/manual/reference/operator/update/positional-all/</a></p>
-<p>The “all positional operator”, <code>$[]</code> indicates that the update operator should modify all elements in the specified array field.
-Doing <code>updateOne(lookup, {$unset: {&quot;things.$[].stuff&quot;: 1}})</code> will successfully clean out the property from objects in the document’s <code>.things</code> array.</p>
+<p>Input devices on an Xorg machine are handled by the <code>xinput</code> utility. You can configure these devices to a usually very high detail, but you need to know how.</p>
+<p>To start with, you’ve got to find your device. Run</p>
+<pre><code>xinput list
+</code></pre>
+<p>(or just <code>xinput</code>)</p>
+<p>and you will get back a detailed listing of input devices. Each will have its ID listed like so</p>
+<pre><code>...
+⎜   ↳ SynPS/2 Synaptics TouchPad              	id=12	[slave  pointer  (2)]
+...
+</code></pre>
+<p>(in this example it’s id=12). Find your device in the list and remember that ID.</p>
+<p>To see what properties can be configured for this device, run</p>
+<pre><code>xinput list-props 12
+</code></pre>
+<p>among which you can find, for example, something like</p>
+<pre><code>libinput Disable While Typing Enabled (355):	1
+</code></pre>
+<p>where the 355 represents the ID of that one specific setting, and the 1 represents what it is set to at the moment (1 meaning true since this setting is boolean).</p>
+<p>To disable it, I run</p>
+<pre><code>xinput set-prop 12 355 0
+</code></pre>
+<p>and to confirm the settings has been applied I can do</p>
+<pre><code>xinput list-props 12
+</code></pre>
+<p>again.</p>
+<p>That’s it. Feel free to explore various settings and look them up and BE CAREFUL not to change things you don’t understand.</p>
 
       </article>
     </div>
