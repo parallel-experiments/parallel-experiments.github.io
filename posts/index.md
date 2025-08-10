@@ -4,4 +4,4 @@ Here I write notes about obscure or forgettable issues I commonly have to deal w
 
 ---
 
-<iframe src="https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123"></iframe>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>

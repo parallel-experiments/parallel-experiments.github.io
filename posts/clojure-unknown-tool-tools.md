@@ -12,7 +12,7 @@ and the error
 
 ### Solution
 
-<iframe src="https://microads.ix.tc/api/ads/delivery-node/direct?nonce=abc123	"></iframe>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/direct?nonce=abc123	"></iframe>
 
 (https://clojurians-log.clojureverse.org/clj-on-windows/2022-09-01) is to create `~/.clojure/tools/tools.edn` and add in
 

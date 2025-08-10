@@ -11,7 +11,7 @@ HOWEVER the developer documentation and all the surrounding information like gui
 > Note: Keep in mind it might be just that my capacity is limited, or perhaps I didn't really understand the concepts and I just got it to work good enough™
 
 ## Solana is instructions and instructions are interfaces
-<iframe src="https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123"></iframe>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
 
 It's just bags of interfaces, and more nuanced concepts/abstractions are just shortcuts to groups of these interfaces;
 

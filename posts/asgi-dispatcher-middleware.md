@@ -10,7 +10,7 @@ This is also possible in a way but what if we want to go a step further and have
 
 ### Solution
 
-<iframe src="https://microads.ix.tc/api/ads/delivery-node/direct?nonce=abc123	"></iframe>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/direct?nonce=abc123	"></iframe>
 
 Enter Werkzeug Dispatcher Middleware.
 

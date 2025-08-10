@@ -8,7 +8,7 @@ If for example you wanted to relax a bit and play an Openarena match, you will q
 
 ## Solution
 
-<iframe src="https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123"></iframe>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
 
 Input devices on an Xorg machine are handled by the `xinput` utility. You can configure these devices to a usually very high detail, but you need to know how.
 

