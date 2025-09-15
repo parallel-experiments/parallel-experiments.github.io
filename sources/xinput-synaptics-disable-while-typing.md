@@ -59,3 +59,6 @@ xinput list-props 12
 again.
 
 That's it. Feel free to explore various settings and look them up and BE CAREFUL not to change things you don't understand.
+
+---
+[[Next: how to mass remove a nested array element propery in MongoDB]](mongodb-mass-removing-nested-array-element-property.html)

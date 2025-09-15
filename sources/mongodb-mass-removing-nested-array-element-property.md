@@ -13,3 +13,6 @@ As seen here https://www.mongodb.com/docs/manual/reference/operator/update/posit
 
 The "all positional operator", `$[]` indicates that the update operator should modify all elements in the specified array field.
 Doing `updateOne(lookup, {$unset: {"things.$[].stuff": 1}})` will successfully clean out the property from objects in the document's `.things` array.
+
+---
+[[Next: unknown tool: 'tools' error, Clojure]](clojure-unknown-tool-tools.html)

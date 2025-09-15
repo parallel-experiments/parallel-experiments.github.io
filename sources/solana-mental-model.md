@@ -28,3 +28,6 @@ Same with Solana interfacings (instructions).
 Interfacings/instructions to handle tokens are provided by the SPL Token program, for example, and executing a series of transactions with instructions to tell the chain that some token exists and some wallet has control of it is how tokens are create.
 
 But you can write your own also. More on this later.
+
+---
+[[Next: xfce lock screen of death]](xfce4-slock-red-screen.html)

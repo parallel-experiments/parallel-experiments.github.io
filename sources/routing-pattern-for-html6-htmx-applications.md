@@ -195,3 +195,5 @@ You end up with a very clear pattern to where things are:
   - GET /part/timeline
   - GET /part/timeline/\<moment>
   
+---
+[[Next: Solana mental model]](solana-mental-model.html)

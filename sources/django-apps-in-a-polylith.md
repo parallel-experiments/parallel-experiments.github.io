@@ -372,3 +372,6 @@ This way you can mix and match django apps together with multiple different djan
 ```
 
 If you have questions or suggestions shoot me an e-mail, at apocpublic@outlook.com.
+
+---
+[[Next: how to run both Flask and Django in one runtime](asgi-dispatcher-middleware.html)]

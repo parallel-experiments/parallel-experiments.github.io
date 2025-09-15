@@ -17,3 +17,6 @@ xfconf-query -c xfce4-session -p /general/LockCommand -s "ABCXYZlock"
 ```
 
 which will *immediately* switch to using your preferred lock mechanism instead of slock.
+
+---
+[[Next: xinput synaptics to disable touchpad while typing]](xinput-synaptics-disable-while-typing.html)

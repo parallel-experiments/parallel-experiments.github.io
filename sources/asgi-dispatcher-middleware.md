@@ -66,3 +66,6 @@ async def dispatch(scope, receive, send):
 You can add as many improvements and changes to this as you'd like it's just a minimal working example and I didn't yet go into type definitions or performance improvements.
 
 All credit goes to c-bata (https://github.com/c-bata, https://c-bata.medium.com/) their github gist is where I finally figured out the dots to connect: https://gist.github.com/c-bata/b77f068fc1a16e55792e8b6154dd8354
+
+---
+[[Next: a peculiar failure scenario with Pydantic 1 and how to deal with it]](python-pydantic-unprintable-validationerror-object.html)

@@ -41,3 +41,6 @@ def example() -> A:
 ```
 
 is a sensible approach to avoiding this type of issue.
+
+---
+[[Next: hypermedia; a routing pattern for HTMX applications]](routing-pattern-for-html6-htmx-applications.html)
