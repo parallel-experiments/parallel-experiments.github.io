@@ -17,4 +17,4 @@ Need help with something? Find me on [upwork.com](https://www.upwork.com/freelan
 <iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
 
 ---
-[[Next: how to put Django into a Polylith](django-apps-in-a-polylith.html)]
+[[Next: the immortal software manifesto](immortal-software-manifesto.html)]
