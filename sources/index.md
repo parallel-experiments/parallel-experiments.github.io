@@ -12,8 +12,6 @@ At the moment I'm interested in how a website can be represented without a "God 
 
 Other info and resources can be found on my [website/digital garden](https://lukal.neocities.org).
 
-Need help with something? Find me on [upwork.com](https://www.upwork.com/freelancers/~01325ee340cf5c249e?mp_source=share)
-
 <iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
 
 ---
