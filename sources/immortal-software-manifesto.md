@@ -1,5 +1,11 @@
 # Immortal software manifesto
 
+> Modern programming scares me in many respects, where they will just build layer after layer after layer that does nothing except translate.
+>
+> \- Ken Thompson.
+>
+> [https://oh4.co/site/ken-thompson.html](https://oh4.co/site/ken-thompson.html)
+
 Refusal to accept reality on reality's terms comes at a cost.
 
 ## Why
@@ -12,6 +18,7 @@ That's where it ends.
 There many more layers on top of it but the physical reality ends there.
 
 ## Software comes and goes but hardware is forever
+
 
 It is time to challenge the harmful yet foundational belief in development, one that software can be developed in reverse - starting with the application goal then working in reverse to wrestle and arrange bits and bytes into a desired (or close enough) shape which is incidentally completely arbitrary and subjective.
 
