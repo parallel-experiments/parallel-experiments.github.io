@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+  <!-- you can edit this template -->
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Datomic rest api how to use datomic from python or php ruby go</title>
+    <style>
+      body {
+	  background: #fff;
+	  color: #222;
+      }
+      blockquote {
+	  padding: 1em;
+	  background: aliceblue;
+      }                              
+      .container {
+	  margin: 10%;
+	  max-width: 600px;
+      }
+      a.headerlink {
+	  opacity: 0;
+      }
+      a.headerlink:hover {
+	  opacity: 1;
+      }
+      pre:has(code) {
+	  background: #ddd;
+	  overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container"><h1 id="datomic-rest-api-how-to-use-datomic-from-python-or-php-or-ruby-or-go">Datomic REST API - how to use Datomic from Python (or PHP, or Ruby, or Go)<a class="headerlink" href="#datomic-rest-api-how-to-use-datomic-from-python-or-php-or-ruby-or-go" title="Permanent link">&para;</a></h1>
+<p>Believe it or not I have to write this up for myself, for future reference.</p>
+<p>Biggest complaint about Clojure is its DX(developer experience)/ecosystem, basically a lack of work towards making things noob friendly.</p>
+<p>I won't go into that matter itself but an unfortunate fact is - the same applies to Datomic.</p>
+<h2 id="what-is-datomic">What is Datomic?<a class="headerlink" href="#what-is-datomic" title="Permanent link">&para;</a></h2>
+<p>Datomic is a database system, it stores a record of immutable facts.</p>
+<p>So you say Alice and Bob are people and Alice works some job  in some company in some city and at that job she sells something to various buyers and wouldn't you know it one of the companies in some other city is a company which Bob works in and he's the one handling procurement.</p>
+<p>Thanks to Datomic and its variations/siblings you have a way to write a program which you can use to ask questions such as</p>
+<ul>
+<li>how many units of X has Bob bought from Alice's company?</li>
+<li>what are the most common products that Bob buys?</li>
+<li>what are the most common products that Alice sells?</li>
+<li>what are the most common products, per company, per city, that Alice sells?</li>
+</ul>
+<p>If you had facts about shipping routes as well you could do all kinds of crazy optimizations and whatnot. But I won't bore you with these, you get the picture.</p>
+<p>Of course you could accomplish the same with any other data store (things like Neo4j are best suited for graphs, even SQL can be of use) but if you're reading this blog post you're probably the type of person to understand how much of a pain it would be to programatically obtain such information with SQL.</p>
+<h2 id="how-datomic-works-in-the-wild">How Datomic works in the wild<a class="headerlink" href="#how-datomic-works-in-the-wild" title="Permanent link">&para;</a></h2>
+<p>Datomic works best when used in Clojure, of course, you'd add it as a project dependency and you've got a ready-to-use client. You can connect it to their Datomic Cloud or you can run your own transactor against your own database.</p>
+<p>Then you write Clojure code to manage the schema (not akin to SQL table schema, more like type definitions for various types of data you're working with (a :user/username is :db.type/string and so on)) and you write Clojure code to write/read the data.</p>
+<p>That's it, effectively.</p>
+<p>Internally Datomic is backend agnostic and exposes the same interface no matter if it's pointed at a Postgres database, an in-memory JDBC datastore (for development), or other SQL  /NoSQL datastores.</p>
+<p>More info <a href="https://docs.datomic.com/operation/storage.html">here</a></p>
+<h2 id="how-datomic-can-work-with-programming-languages-other-than-clojure">How Datomic (can) work with programming languages other than Clojure<a class="headerlink" href="#how-datomic-can-work-with-programming-languages-other-than-clojure" title="Permanent link">&para;</a></h2>
+<p>Datomic ships with a REST API. This means you can use it for  basically everything you'd want to use it for with Clojure, but with Python for example.</p>
+<p>You can <a href="https://docs.datomic.com/setup/pro-setup.html#get-datomic">download Datomic from here</a> and start its REST server like so (example uses Postgres):</p>
+<pre><code>./bin/rest -p $SOME_PORT $DATOMIC_DB 'datomic:sql://$DATOMIC_DB?jdbc:postgresql://$PG_HOST:$PG_PORT/$PG_DB?user=$PG_USR&amp;password=$PG_PWD'
+</code></pre>
+<p>where - obviously - the environment variables are substituted with appropriate data. Two caveates with this info:</p>
+<ol>
+<li>Not yet sure if there's a way to avoid passing credentials in the connection query string</li>
+<li>Will double check but I might've mistaken the places where <code>$DATOMIC_DB</code> and <code>$PG_DB</code> go (I gave them both the same name but they're two different things -_-), if it doesn't work for you and I haven't double checked it yet try switching them around until the connection gets properly established</li>
+</ol>
+<p>It might seem odd at first and it was a major hurdle for me: the REST program will start succesfully and you can talk to it however you will keep getting errors.</p>
+<p>It won't be immediately obvious (and yes the <a href="https://docs.datomic.com/setup/pro-setup.html#run-a-transactor">download page</a> has got a section mentioning it right below the download link) but you need to start the transactor as well.</p>
+<p>Think of the transactor as of a centralized Datomic gate, IIRC it's basically a chokepoint in order to guarantee ACID compliance.</p>
+<p>Run the transactor via</p>
+<pre><code>./bin/transactor config/samples/sql-transactor-template.properties
+</code></pre>
+<p>I think the sample originally targets the in-memory store, copy the dot-properties file somewhere and edit (comment out?) the lines pointing to the protocol, host, port, sql-url, sql-user, sql-password.</p>
+<h2 id="more-errors">More errors<a class="headerlink" href="#more-errors" title="Permanent link">&para;</a></h2>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
+
+<p>After configuring and starting these services you will ... face more errors :) because Datomic doesn't autoconfigure the storage, it's up to you to do it.</p>
+<p>For Postgres there's a dot-sql script file in <code>./bin/sql/postgres-table.sql</code> which you can run directly against your Postgres instance. It will create a <code>datomic_kvs</code> table which Datomic operates in.</p>
+<p>After doing this you will finally be able to write facts to your Datomic datastore via Datomic HTTP REST API... but only about the Database itself (writing :db/doc facts).</p>
+<blockquote>
+<p>Sidenote, check out https://pypi.org/project/edn-format/ for json&lt;-&gt;edn conversion with Python</p>
+</blockquote>
+<h2 id="even-more-errors">Even more errors<a class="headerlink" href="#even-more-errors" title="Permanent link">&para;</a></h2>
+<p>So Datomic won't let you persist facts/datums without declaring your fact schemas? What's a programmer to do?</p>
+<p>At this point we go into options &amp; opinions territory but I'd concluded that for my project's needs, <a href="https://github.com/qtrfeast/conformity">conformity</a> is more than enough.</p>
+<p>I'd set up an initializer type of microservice (in Clojure) which my main Python program depends on, and the idea is that on every start/restart the sidecar will start and transform the schema to the desired structure.</p>
+<hr />
+<p>This effectively concludes the little crash course. I've gotten to this point and haven't (so far) discovered any additional obstacles to using Datomic from Python/etc.</p>
+<p>[<a href="immortal-software-manifesto.html">Next: immortal software manifesto</a>]</p>
+</div>
+  </body>
+</html>

@@ -15,4 +15,4 @@ Other info and resources can be found on my [website/digital garden](https://luk
 <iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
 
 ---
-[[Next: the immortal software manifesto](immortal-software-manifesto.html)]
+[[Next: Datomic REST API, how to use Datomic from Python or PHP, Ruby, Go](datomic-rest-api-how-to-use-datomic-from-python-or-php-ruby-go.html)]

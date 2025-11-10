@@ -58,6 +58,8 @@ You can do this as a test and advertise your product with it: "certified as reli
 
 ## Comments
 
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
+
 There are of course other unavoiadable concerns that are common to building a software service (e.g. where are user accounts stored, how are sessions handled et cetera) that this does not cover however there are always more and less reliable approaches to handling said concerns.
 
 ## Criticism
