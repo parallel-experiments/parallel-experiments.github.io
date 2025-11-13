@@ -50,6 +50,24 @@ where - obviously - the environment variables are substituted with appropriate d
 1. Not yet sure if there's a way to avoid passing credentials in the connection query string
 2. Will double check but I might've mistaken the places where `$DATOMIC_DB` and `$PG_DB` go (I gave them both the same name but they're two different things -_-), if it doesn't work for you and I haven't double checked it yet try switching them around until the connection gets properly established
 
+## Some errors
+
+You are likely to face an `unsupported protocol: sql` error at this point, and its cause would be that Clojure (read Java) underneath Datomic doesn't know what Postgres is nor that it's a SQL database.
+
+To teach your Datomic installation (read Java) about Postgres you will have to `cd $WHEREVER_YOU_EXTRACT_AKA_INSTALL_DATOMIC` then `mvn install` (more info [here](https://www.marcobehler.com/guides/mvn-clean-install-a-short-guide-to-maven))
+
+It might just so happen your `mvn install` run fails as well, something about PGP and keys and whatnot:
+
+## Some more errors
+
+If at this point you're facing a GPG key error of some kind it would mean you also have to tell your Datomic (read Java) installation about an identity.
+
+> Sidenote: This (I think) is part of the proprietary DNA that got carried over to the free version of Datomic where you sign your subscription with your secure keypair in order to be able to completely install Datomic.
+
+PGP and GPG are a rabbit hole on their own but the basic idea is you can install GPG [more info](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) and run its key generator to create yourself a keypair and maven will then use your public keys to (I think) sign the installation of Datomic's core dependencies.
+
+## No more errors, or ...?
+
 It might seem odd at first and it was a major hurdle for me: the REST program will start succesfully and you can talk to it however you will keep getting errors.
 
 It won't be immediately obvious (and yes the [download page](https://docs.datomic.com/setup/pro-setup.html#run-a-transactor) has got a section mentioning it right below the download link) but you need to start the transactor as well.
