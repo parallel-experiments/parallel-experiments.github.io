@@ -106,4 +106,39 @@ I'd set up an initializer type of microservice (in Clojure) which my main Python
 
 This effectively concludes the little crash course. I've gotten to this point and haven't (so far) discovered any additional obstacles to using Datomic from Python/etc.
 
+## On conformity - when do the errors stop?
+
+Since this is an article inteded for prople who are generally not used to the impenetrable Clojure ecosystem and adopting a schema in order to do transactions is actually necessary, we will proceed into Clojure-only territory - that is - managing the Datomic schema with Conformity.
+
+In the project's README you will find an example of how it is supposed to be used and while last commit was in 2020. it's still valid, Clojure ecosystem is as stable as it is impenetrable (case in point: while researching this section I'd noticed that clojure.org has literally 0 mentions of either the word "install" or "download").
+It does not, however, explain how exactly are we supposed to run it against a system running on Postgres - the examples are all about the in-memory Datomic store.
+
+To run conformity in a Clojure project you will need the following:
+
+1. https://clojure.org/guides/install_clojure
+2. a directory for your Datomic schema project - best to put this into a separate repository and touch only when necessary (or use [this template  I made](https://github.com/lukal-x/datomic-schema-postgres/) and skip the following points)
+3. cd into your schema dir/repo
+4. `touch deps.edn`
+5. add the following to `deps.edn`
+```
+{:paths ["src" "resources"]
+ :deps {org.clojure/clojure {:mvn/version "1.12.3"}
+        io.rkn/conformity {:mvn/version "0.5.4"}
+        org.postgresql/postgresql {:mvn/version "42.7.7"}
+        com.datomic/peer {:mvn/version "1.0.7469"}}}
+```
+
+6. `mkdir resources && touch resources/myschema.edn`
+7. specify your schema in `resources/myschema.edn` (more info [here](https://docs.datomic.com/schema/schema-reference.html))
+8. then `mkdir src/myproj && touch src/myproj/main.clj`
+9. add the exact same clojure code as in examples from [conformity's README](https://github.com/qtrfeast/conformity?tab=readme-ov-file#srcmy_projectsomethingclj) but change the connection uri to `datomic:sql://myprojdb?jdbc:postgresql://localhost:5432/myprojpgdb?user=myprojuser&password=myprojpwd`
+
+then in repo root run
+
+`clj -M -m myproj.main`
+
+and clojure will download conformity, postgresql driver, and a datomic peer (provides the `datomic.api` that you see being imported in the example (plus conformity uses it internally I think)). 
+
+Conformity should run without error, print out the new state of Datomic after ensuring the schema, and hang. I force stopped the command I ran and called it a day.
+
 [[Next: immortal software manifesto](immortal-software-manifesto.html)]
