@@ -1,181 +1,89 @@
-
-<script>
-  window.location.replace(window.location.href.replace('https://parallel-experiments.github.io', 'https://lukal.neocities.org/parallel-experiments'))
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+      }
+
+      blockquote {
+	  padding: 1em;
+	  background: aliceblue;
+      }
+      .container {
+	  margin: 10%;
+	  max-width: 600px;
+      }
+      pre:has(code) {
+	  background: #888;
+	  overflow: auto;
+      }
+      @media (prefers-color-scheme: dark) {
+	  body {
+	      color: #eee;
+              background: #333;                 
+	  }
+
+	  a {
+	      color: #fff;
+	  }
+
+	  a:visited {
+	      color: #bbb;
+	  }
+
+	  blockquote {
+	      background: #444;
+	  }
+      }
+    </style>
+  </head>
+  <body>
+    <article>
+      <div class="container">
+	<h1 id="touchpad-stops-working-when-a-key-is-pressed%2Fheld">Touchpad stops working when a key is pressed/held <a class="heading-anchor-permalink" href="#touchpad-stops-working-when-a-key-is-pressed%2Fheld">#</a></h1>
+<p>I’ve seen this happen on various machines and various Linux distros and I keep forgetting the exact way to control the behavior, so a blog post is due.</p>
+<p>Essentially on an Xorg setup the default behavior for touchpads is to stop pointer activity as soon as a keyboard button is pressed or held.</p>
+<p>If for example you wanted to relax a bit and play an Openarena match, you will quickly discover that when you use WASD to move in-game, the touchpad gets “locked” and you cannot look around … until you stop moving.</p>
+<h2 id="solution">Solution <a class="heading-anchor-permalink" href="#solution">#</a></h2>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
+<p>Input devices on an Xorg machine are handled by the <code>xinput</code> utility. You can configure these devices to a usually very high detail, but you need to know how.</p>
+<p>To start with, you’ve got to find your device. Run</p>
+<pre><code>xinput list
+
+</code></pre>
+<p>(or just <code>xinput</code>)</p>
+<p>and you will get back a detailed listing of input devices. Each will have its ID listed like so</p>
+<pre><code>...
+⎜   ↳ SynPS/2 Synaptics TouchPad              	id=12	[slave  pointer  (2)]
+...
+
+</code></pre>
+<p>(in this example it’s id=12). Find your device in the list and remember that ID.</p>
+<p>To see what properties can be configured for this device, run</p>
+<pre><code>xinput list-props 12
+
+</code></pre>
+<p>among which you can find, for example, something like</p>
+<pre><code>libinput Disable While Typing Enabled (355):	1
+
+</code></pre>
+<p>where the 355 represents the ID of that one specific setting, and the 1 represents what it is set to at the moment (1 meaning true since this setting is boolean).</p>
+<p>To disable it, I run</p>
+<pre><code>xinput set-prop 12 355 0
+
+</code></pre>
+<p>and to confirm the settings has been applied I can do</p>
+<pre><code>xinput list-props 12
+
+</code></pre>
+<p>again.</p>
+<p>That’s it. Feel free to explore various settings and look them up and BE CAREFUL not to change things you don’t understand.</p>
+<hr>
+<p><a href="mongodb-mass-removing-nested-array-element-property.html">[Next: how to mass remove a nested array element propery in MongoDB]</a></p>
+
+      </div>
+    </article>
+  </body>
+<html>

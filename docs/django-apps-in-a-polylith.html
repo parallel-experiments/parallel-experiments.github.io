@@ -1,491 +1,396 @@
-
-<script>
-  window.location.replace(window.location.href.replace('https://parallel-experiments.github.io', 'https://lukal.neocities.org/parallel-experiments'))
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+      }
+
+      blockquote {
+	  padding: 1em;
+	  background: aliceblue;
+      }
+      .container {
+	  margin: 10%;
+	  max-width: 600px;
+      }
+      pre:has(code) {
+	  background: #888;
+	  overflow: auto;
+      }
+      @media (prefers-color-scheme: dark) {
+	  body {
+	      color: #eee;
+              background: #333;                 
+	  }
+
+	  a {
+	      color: #fff;
+	  }
+
+	  a:visited {
+	      color: #bbb;
+	  }
+
+	  blockquote {
+	      background: #444;
+	  }
+      }
+    </style>
+  </head>
+  <body>
+    <article>
+      <div class="container">
+	<h1 id="django-apps-in-a-polylith">Django apps in a Polylith <a class="heading-anchor-permalink" href="#django-apps-in-a-polylith">#</a></h1>
+<p>The problem: how to organize a Django setup with multiple apps within a polylith.</p>
+<h2 id="definitions">Definitions <a class="heading-anchor-permalink" href="#definitions">#</a></h2>
+<p>Before anything let’s define what things are.
+What’s a Django, why does it matter, what are apps, and what’s a Polylith?</p>
+<h3 id="what%E2%80%99s-a-django-and-why-does-it-matter">What’s a Django and why does it matter <a class="heading-anchor-permalink" href="#what%E2%80%99s-a-django-and-why-does-it-matter">#</a></h3>
+<p>Django’s a Python web framework (<a href="https://en.wikipedia.org/wiki/Web_framework">https://en.wikipedia.org/wiki/Web_framework</a>), and while there are many frameworks in many languages (<a href="https://en.wikipedia.org/wiki/Web_framework#General-purpose_website_frameworks">https://en.wikipedia.org/wiki/Web_framework#General-purpose_website_frameworks</a>) what makes Django unique is its concept of apps. Reusable apps within a single monolithic web application.</p>
+<h3 id="what-are-apps">What are apps <a class="heading-anchor-permalink" href="#what-are-apps">#</a></h3>
+<p>It might not make sense at first but consider first that you might need reusable apps that you might want to install to your clients’ servers.
+One example would be if you specialize in e-commerce and you’ve got clients that have</p>
+<ul>
+<li>an online catalog and</li>
+<li>they have kiosks in their physical stores where their customers can do some subset of operations with the catalog and</li>
+<li>they might also have sales/customer support staff which needs to use yet another user interface and</li>
+<li>they might need a special portal that their accounting department uses to work with financial data and</li>
+<li>they might need a special portal for their warehouse/distribution staff</li>
+<li>and so on and so forth</li>
+</ul>
+<p>How do you handle all that? Even if they need only one of these and not any others it’s useful to be able to simply plug another - similar or entirely different from the primary - application into the ecosystem.</p>
+<p>Django lets you do this with these apps. Even if it’s fundamentally one and the same “portal” you can leverage apps to make domain boundaries (domain as in domain driven design) or break each app into its own process/runtime and its own Django setup and what’ve you got? Microservices!</p>
+<h3 id="what%E2%80%99s-a-polylith">What’s a polylith <a class="heading-anchor-permalink" href="#what%E2%80%99s-a-polylith">#</a></h3>
+<p>A polylith is monorepo containing the entirety of a project broken down into microservices, in a sane structure, allowing for both code reuse and clear distinction between deployable artifacts.
+There is tooling for it (primarily CLI) where you instruct a tool to manage the system but everything can be done with symlinks and - if necessary - reification (copying the linked directory) and reset. I generally don’t use reification but when I do I use <code>git checkout</code> to reset a reified directory back into a symlink in order to reify it with updated content. The last point I just want to ensure we both understand it’s possible but it’s really just advanced usage and I wouldn’t think too much about it in the beginning.</p>
+<p>Read more here <a href="https://polylith.gitbook.io/polylith/">https://polylith.gitbook.io/polylith/</a>.</p>
+<p>To quickly grok why polylith might work for you imagine for a second that same e-commerce software product you’re selling to customers which’ve got warehouse portsl, sales &amp; support portals, accountants, in-shop kiosks, online catalogs etc all dealing with the same data.</p>
+<p>Let’s say hypothetically each of these portals has a UI of some kind and it either talks to its own specialized API or is self contained in some way.</p>
+<p>With a polylith you’d have something like (# =&gt; these are my comments)</p>
+<pre><code>e-commerce/
+├── bases
+│   └── ecom
+│       ├── accounting
+│       │   └── app.py # =&gt; a multiplatform QT desktop application
+│       ├── kiosk
+│       │   ├── app.py # =&gt; API for kiosk mobile app
+│       │   └── src
+│       │       ├── app.jsx # =&gt; kiosk mobile app
+│       │       ├── components
+│       │       ├── hooks
+│       │       ├── index.jsx
+│       │       ├── pages
+│       │       ├── router.jsx
+│       │       ├── screens
+│       │       ├── services
+│       │       ├── store
+│       │       └── utils
+│       ├── sales
+│       │   ├── app.py # =&gt; API for sales SPA
+│       │   └── src
+│       │       ├── app.jsx # =&gt; complex sales SPA
+│       │       ├── components
+│       │       ├── features
+│       │       ├── hooks
+│       │       ├── index.jsx
+│       │       ├── pages
+│       │       ├── router.jsx
+│       │       ├── services
+│       │       ├── store
+│       │       └── utils
+│       ├── support
+│       │   ├── app.py # =&gt; a flask MPA for support staff
+│       ├── warehouse
+│       │   ├── app.py # =&gt; an API for warehouse mobile app
+│       │   └── src
+│       │       ├── app.jsx # =&gt; mobile app for warehouse staff
+│       │       ├── components
+│       │       ├── hooks
+│       │       ├── index.jsx
+│       │       ├── pages
+│       │       ├── router.jsx
+│       │       ├── screens
+│       │       ├── services
+│       │       ├── store
+│       │       └── utils
+│       └── webshop
+│           ├── app.py # =&gt; an API for the webshop
+│           └── src
+│               ├── app.jsx # =&gt; a rich full stack (SPA + SSR) webshop app
+│               ├── components
+│               ├── features
+│               ├── hooks
+│               ├── index.jsx
+│               ├── pages
+│               ├── router.jsx
+│               ├── services
+│               ├── store
+│               └── utils
+├── components
+│   ├── ecom
+│   │   ├── lib # =&gt; shared libraries, reusable throughout the system
+│   │   │   ├── fsutils.py
+│   │   │   ├── money.py
+│   │   │   └── webutils.py
+│   │   └── tool # =&gt; shared tooling, reusable throughout the system
+│   │       ├── addresses.py
+│   │       ├── analytics.py
+│   │       ├── csv_map.py
+│   │       └── email.py
+│   └── ops # =&gt; ...
+├── Makefile
+├── projects
+│   ├── accounting-linux # =&gt; deployable artifact (binary) for linux desktop
+│   │   ├── ecom
+│   │   │   ├── accounting -&gt; ../../../bases/ecom/accounting/
+│   │   │   ├── lib -&gt; ../../../components/ecom/lib
+│   │   │   └── tool -&gt; ../../../components/ecom/tool
+│   │   ├── main.py
+│   │   └── requirements.txt
+│   ├── accounting-osx # =&gt; deployable artifact (binary) for OSX desktop
+│   │   ├── ecom
+│   │   │   ├── accounting -&gt; ../../../bases/ecom/accounting/
+│   │   │   ├── lib -&gt; ../../../components/ecom/lib
+│   │   │   └── tool -&gt; ../../../components/ecom/tool
+│   │   ├── main.py
+│   │   └── requirements.txt
+│   ├── accounting-win # =&gt; deployable artifact (binary) for Windows desktop
+│   │   ├── ecom
+│   │   │   ├── accounting -&gt; ../../../bases/ecom/accounting/
+│   │   │   ├── lib -&gt; ../../../components/ecom/lib
+│   │   │   └── tool -&gt; ../../../components/ecom/tool
+│   │   ├── main.py
+│   │   └── requirements.txt
+│   ├── kiosk-api # =&gt; deployable (k8s/docker/etc) API server
+│   │   ├── ecom
+│   │   │   ├── kiosk -&gt; ../../../bases/ecom/kiosk/
+│   │   │   ├── lib -&gt; ../../../components/ecom/lib
+│   │   │   └── tool -&gt; ../../../components/ecom/tool
+│   │   ├── main.py
+│   │   └── requirements.txt
+│   ├── kiosk-mobile # =&gt; deployable (app store/apk/ipa) mobile app
+│   │   ├── ecom
+│   │   │   ├── kiosk -&gt; ../../../bases/ecom/kiosk/
+│   │   │   ├── lib -&gt; ../../../components/ecom/lib
+│   │   │   └── tool -&gt; ../../../components/ecom/tool
+│   │   ├── main.py
+│   │   └── requirements.txt
+│   ├── sales-api # =&gt; ...
+│   │   ├── ecom
+│   │   │   ├── lib -&gt; ../../../components/ecom/lib
+│   │   │   ├── sales -&gt; ../../../bases/ecom/sales/
+│   │   │   └── tool -&gt; ../../../components/ecom/tool
+│   │   ├── main.py
+│   │   └── requirements.txt
+│   ├── sales-app # =&gt; deployable SPA
+│   │   ├── ecom
+│   │   │   └── sales -&gt; ../../../bases/ecom/sales/
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── support-app # =&gt; deployable (k8s/docker/etc) MPA server
+│   │   ├── ecom
+│   │   │   ├── lib -&gt; ../../../components/ecom/lib
+│   │   │   ├── support -&gt; ../../../bases/ecom/support/
+│   │   │   └── tool -&gt; ../../../components/ecom/tool
+│   │   ├── main.py
+│   │   └── requirements.txt
+│   ├── warehouse-api # =&gt; ...
+│   │   ├── ecom
+│   │   │   ├── lib -&gt; ../../../components/ecom/lib
+│   │   │   ├── tool -&gt; ../../../components/ecom/tool
+│   │   │   └── warehouse -&gt; ../../../bases/ecom/warehouse/
+│   │   ├── main.py
+│   │   └── requirements.txt
+│   ├── warehouse-mobile # =&gt; ...
+│   │   ├── ecom
+│   │   │   └── warehouse -&gt; ../../../bases/ecom/warehouse/
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── webshop-api # =&gt; ...
+│   │   ├── ecom
+│   │   │   ├── lib -&gt; ../../../components/ecom/lib
+│   │   │   ├── tool -&gt; ../../../components/ecom/tool
+│   │   │   └── webshop -&gt; ../../../bases/ecom/webshop
+│   │   ├── main.py
+│   │   └── requirements.txt
+│   └── webshop-app # =&gt; deployable full stack app
+│       ├── ecom
+│       │   └── webshop -&gt; ../../../bases/ecom/webshop
+│       ├── index.js
+│       └── package.json
+└── README.md
+
+</code></pre>
+<p>Just imagine trying to write code for an ecosystem of this complexity. Then try and imagine how much time and effort and &gt;&gt;cognitive load&lt;&lt; it would take to handle its SDLC.</p>
+<p>Polylith puts it all into a single monorepo but helps you with clear separation of what belongs where and why.</p>
+<p>Massive props to Joakim Tengstrand, Furkan Bayaraktar, and James Trunk for essentially inventing and creating Polylith as a concept (<a href="https://polylith.gitbook.io/polylith/conclusion/who-made-polylith">https://polylith.gitbook.io/polylith/conclusion/who-made-polylith</a>) and of course props to David Vujic for Python tooling (and many many helpful blogs! <a href="https://davidvujic.blogspot.com/">https://davidvujic.blogspot.com/</a>) for Polylith <a href="https://davidvujic.github.io/python-polylith-docs/">https://davidvujic.github.io/python-polylith-docs/</a></p>
+<p>So…</p>
+<p>back to architecture conundrum - how to fit Django apps into a Polylith?</p>
+<h2 id="solution">Solution <a class="heading-anchor-permalink" href="#solution">#</a></h2>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
+<p>So, two problems with Django apps, and they both stem from how Django is supposed to be set up.</p>
+<p>Usually you would either install django globally or</p>
+<ol>
+<li>init the root project</li>
+<li>add django itself as a dependency (either via a package manager or by making a venv and doing <code>.venv/bin/pip3 install django</code>)</li>
+<li>once django is installed you can now do <code>./venv/bin/django-admin</code> to <code>startproject</code> (this makes the Django base setup)</li>
+<li>use <code>startapp</code> to create additional apps for the project, all sitting alongsite the Django base</li>
+</ol>
+<p>and it would look like</p>
+<pre><code>Script started on 2025-09-02 22:38:40+02:00 [TERM=&quot;xterm-256color&quot; TTY=&quot;/dev/pts/6&quot; COLUMNS=&quot;80&quot; LINES=&quot;24&quot;]
+user1@machine1:~$ cd /tmp
+user1@machine1:/tmp$ mkdir mysystem &amp;&amp; cd mysystem
+user1@machine1:/tmp/mysystem$ pyenv local 3.13
+user1@machine1:/tmp/mysystem$ python3 --version
+Python 3.13.5
+user1@machine1:/tmp/mysystem$ python3 -m venv .venv
+.venv/binuser1@machine1:/tmp/mysystem$ .venv/bin/pip3 install django==5.2.5
+Collecting django==5.2.5
+  Downloading django-5.2.5-py3-none-any.whl.metadata (4.1 kB)
+Collecting asgiref&gt;=3.8.1 (from django==5.2.5)
+  Downloading asgiref-3.9.1-py3-none-any.whl.metadata (9.3 kB)
+Collecting sqlparse&gt;=0.3.1 (from django==5.2.5)
+  Downloading sqlparse-0.5.3-py3-none-any.whl.metadata (3.9 kB)
+Downloading django-5.2.5-py3-none-any.whl (8.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.3/8.3 MB 21.0 MB/s eta 0:00:00
+.Downloading asgiref-3.9.1-py3-none-any.whl (23 kB)
+Downloading sqlparse-0.5.3-py3-none-any.whl (44 kB)
+Installing collected packages: sqlparse, asgiref, django
+Successfully installed asgiref-3.9.1 django-5.2.5 sqlparse-0.5.3
+
+[notice] A new release of pip is available: 25.1.1 -&gt; 25.2
+[notice] To update, run: /tmp/mysystem/.venv/bin/python3 -m pip install --upgrade pip
+user1@machine1:/tmp/mysystem$ .venv/bin/pip3 freeze &gt; requirements.txt
+user1@machine1:/tmp/mysystem$ .venv/bin/django-admin startproject core .
+user1@machine1:/tmp/mysystem$ ls
+core  manage.py  requirements.txt
+user1@machine1:/tmp/mysystem$ .venv/bin/python3 manage.py startapp firstapp
+user1@machine1:/tmp/mysystem$ ls
+core  firstapp  manage.py  requirements.txt
+user1@machine1:/tmp/mysystem$ .venv/bin/python3 manage.py startapp secondapp
+user1@machine1:/tmp/mysystem$ ls
+core  firstapp  manage.py  requirements.txt  secondapp
+user1@machine1:/tmp/mysystem$ .venv/bin/python3 manage.py runserver
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+
+You have 18 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+Run 'python manage.py migrate' to apply them.
+September 02, 2025 - 20:57:43
+Django version 5.2.5, using settings 'core.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+WARNING: This is a development server. Do not use it in a production setting. Use a production WSGI or ASGI server instead.
+For more information on production servers see: https://docs.djangoproject.com/en/5.2/howto/deployment/
+[02/Sep/2025 20:57:47] &quot;GET / HTTP/1.1&quot; 200 12068
+Not Found: /favicon.ico
+[02/Sep/2025 20:57:47] &quot;GET /favicon.ico HTTP/1.1&quot; 404 2206
+^Cuser1@machine1:/tmp/mysystem$ exit
+exit
+
+Script done on 2025-09-02 22:57:52+02:00 [COMMAND_EXIT_CODE=&quot;0&quot;]
+
+</code></pre>
+<p>So what you end up with is a django core and one (or many) django apps at the same level, and this way you can configure the apps in the core (this is required of course). Any deviation from this pattern will cause a lot of pain in terms of import paths and namings/configurations.</p>
+<p>To translate this into a polylith, because of course we won’t be cramming everything into a single <code>base</code>, we have two options</p>
+<ul>
+<li>make a new base for each django app (which can make sense in some situations) or</li>
+<li>make a new component for each django app (which I went with for my project)</li>
+</ul>
+<p>and the second IMHO makes much more sense. Not only are django apps reusable so they fit as a component but different combinations of apps can be used by multiple different Django artifacts (an admin UI is one simple example).</p>
+<p>This way you can mix and match django apps together with multiple different django systems. Here’s an example of a personal project of mine where a django system with <code>primaryapp</code> brings in multiple other apps as components:</p>
+<pre><code>.
+├── bases
+│   └── myproject
+│       ├── ...
+│       └── webapp
+│           ├── asgi.py
+│           ├── __init__.py
+│           ├── settings.py
+│           ├── urls.py
+│           └── wsgi.py
+│...
+├── components
+│   ├── djangoapps
+│   │   ├── sideapp1
+│   │   │   ├── admin.py
+│   │   │   ├── apps.py
+│   │   │   ├── __init__.py
+│   │   │   ├── migrations
+│   │   │   │   └── __init__.py
+│   │   │   ├── models.py
+│   │   │   ├── tests.py
+│   │   │   └── views.py
+│   │   ├── sideapp2
+│   │   │   ├── admin.py
+│   │   │   ├── apps.py
+│   │   │   ├── __init__.py
+│   │   │   ├── migrations
+│   │   │   │   └── __init__.py
+│   │   │   ├── models.py
+│   │   │   ├── __pycache__
+│   │   │   ├── tests.py
+│   │   │   └── views.py
+│   │   ├── sideapp3
+│   │   │   ├── admin.py
+│   │   │   ├── apps.py
+│   │   │   ├── __init__.py
+│   │   │   ├── migrations
+│   │   │   │   └── __init__.py
+│   │   │   ├── models.py
+│   │   │   ├── tests.py
+│   │   │   └── views.py
+│   │   ├── sideapp4
+│   │   │   ├── admin.py
+│   │   │   ├── apps.py
+│   │   │   ├── __init__.py
+│   │   │   ├── migrations
+│   │   │   │   └── __init__.py
+│   │   │   ├── models.py
+│   │   │   ├── tests.py
+│   │   │   └── views.py
+│   │   └── primaryapp
+│   │       ├── admin.py
+│   │       ├── apps.py
+│   │       ├── components.py
+│   │       ├── __init__.py
+│   │       ├── migrations
+│   │       │   └── __init__.py
+│   │       ├── models.py
+│   │       ├── tests.py
+│   │       ├── urls.py
+│   │       └── views.py
+│   └── myproject
+│...
+└── projects
+    ├── ...
+    ├── myproject-webapp
+    │   ├── ...
+    │   ├── Makefile
+    │   ├── README.md
+    │   ├── requirements.txt
+    │   └── myproject
+    │       ├── sideapp1 -&gt; ../../../components/djangoapps/sideapp1
+    │       ├── manage.py
+    │       ├── sideapp2 -&gt; ../../../components/djangoapps/sideapp2
+    │       ├── sideapp3 -&gt; ../../../components/djangoapps/sideapp3
+    │       ├── sideapp4 -&gt; ../../../components/djangoapps/sideapp4
+    │       ├── primaryapp -&gt; ../../../components/djangoapps/primaryapp
+    │       └── webapp -&gt; ../../../bases/myproject/webapp
+    └── ...
+        └── ...
+
+</code></pre>
+<p>If you have questions or suggestions shoot me an e-mail, at <a href="mailto:apocpublic@outlook.com">apocpublic@outlook.com</a>.</p>
+<hr>
+<p>[<a href="asgi-dispatcher-middleware.html">Next: how to run both Flask and Django in one runtime</a>]</p>
+
+      </div>
+    </article>
+  </body>
+<html>

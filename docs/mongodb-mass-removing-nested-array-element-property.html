@@ -1,158 +1,60 @@
-
-<script>
-  window.location.replace(window.location.href.replace('https://parallel-experiments.github.io', 'https://lukal.neocities.org/parallel-experiments'))
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+      }
+
+      blockquote {
+	  padding: 1em;
+	  background: aliceblue;
+      }
+      .container {
+	  margin: 10%;
+	  max-width: 600px;
+      }
+      pre:has(code) {
+	  background: #888;
+	  overflow: auto;
+      }
+      @media (prefers-color-scheme: dark) {
+	  body {
+	      color: #eee;
+              background: #333;                 
+	  }
+
+	  a {
+	      color: #fff;
+	  }
+
+	  a:visited {
+	      color: #bbb;
+	  }
+
+	  blockquote {
+	      background: #444;
+	  }
+      }
+    </style>
+  </head>
+  <body>
+    <article>
+      <div class="container">
+	<h1 id="mass-removing-a-property-from-an-object-that%E2%80%99s-an-element-in-an-array-property">Mass removing a property from an object that’s an element in an array property <a class="heading-anchor-permalink" href="#mass-removing-a-property-from-an-object-that%E2%80%99s-an-element-in-an-array-property">#</a></h1>
+<p>Noting this case because finding a solution or docs on it is not easy and the functionality is not discoverable. I myself forgot about it and had to re-find it a couple of times.</p>
+<p>Scenario is when a document has a <code>.things</code> property that’s an array of objects, and one of the properties (e.g. <code>.things[].stuff</code> has to be mass removed.
+Unsetting the nested property by doing an <code>updateOne(lookup, {$unset: {&quot;things.stuff&quot;: 1}})</code> or <code>$unset: {&quot;things.$.stuff&quot;: 1}</code> does not work.</p>
+<h3 id="solution">Solution <a class="heading-anchor-permalink" href="#solution">#</a></h3>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
+<p>As seen here <a href="https://www.mongodb.com/docs/manual/reference/operator/update/positional-all/">https://www.mongodb.com/docs/manual/reference/operator/update/positional-all/</a></p>
+<p>The “all positional operator”, <code>$[]</code> indicates that the update operator should modify all elements in the specified array field.
+Doing <code>updateOne(lookup, {$unset: {&quot;things.$[].stuff&quot;: 1}})</code> will successfully clean out the property from objects in the document’s <code>.things</code> array.</p>
+<hr>
+<p><a href="clojure-unknown-tool-tools.html">[Next: unknown tool: ‘tools’ error, Clojure]</a></p>
+
+      </div>
+    </article>
+  </body>
+<html>

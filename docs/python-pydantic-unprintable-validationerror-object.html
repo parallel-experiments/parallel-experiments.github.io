@@ -1,179 +1,83 @@
-
-<script>
-  window.location.replace(window.location.href.replace('https://parallel-experiments.github.io', 'https://lukal.neocities.org/parallel-experiments'))
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+      }
+
+      blockquote {
+	  padding: 1em;
+	  background: aliceblue;
+      }
+      .container {
+	  margin: 10%;
+	  max-width: 600px;
+      }
+      pre:has(code) {
+	  background: #888;
+	  overflow: auto;
+      }
+      @media (prefers-color-scheme: dark) {
+	  body {
+	      color: #eee;
+              background: #333;                 
+	  }
+
+	  a {
+	      color: #fff;
+	  }
+
+	  a:visited {
+	      color: #bbb;
+	  }
+
+	  blockquote {
+	      background: #444;
+	  }
+      }
+    </style>
+  </head>
+  <body>
+    <article>
+      <div class="container">
+	<h1 id="pydantic-validationerror-with-unprintable-validationerror-object">Pydantic ValidationError with unprintable ValidationError object <a class="heading-anchor-permalink" href="#pydantic-validationerror-with-unprintable-validationerror-object">#</a></h1>
+<p>In some cases (NOT always), using Pydantic in a Python project will fail with an “unprintable” validation error, resulting in stack breaking with an exception similar to</p>
+<pre><code>pydantic.error_wrappers.ValidationError: &lt;unprintable ValidationError object&gt;
+
+</code></pre>
+<p>and while I couldn’t find the time to exactly find what causes this and how to handle it elegantly;</p>
+<h3 id="solution">Solution <a class="heading-anchor-permalink" href="#solution">#</a></h3>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
+<p>a quick solution that I found is to try to instantiate some or any of the Pydantic types as early as possible.
+In other words, this problem arises when</p>
+<pre><code class="language-python">from pydantic import BaseModel
+
+class B(BaseModel):
+    some_property: int
+
+class A(BaseModel):
+    b: B
+
+def example() -&gt; A:
+    b = {&quot;another_property&quot;: None}
+    return A(**{&quot;b&quot;: b}) # =&gt; raises an &quot;unprintable&quot; ValidationError with no extra info
+
+</code></pre>
+<p>meaning that validating inner types earlier like so</p>
+<pre><code class="language-python">def example() -&gt; A:
+    b = {&quot;another_property&quot;: None}
+    B(**b) # =&gt; raises a &quot;printable&quot; ValidationError, b.some_property # Field required [type=missing, input_value={'another_property': None}, input_type=dict]
+
+    return A(**{&quot;b&quot;: b})
+
+</code></pre>
+<p>is a sensible approach to avoiding this type of issue.</p>
+<hr>
+<p><a href="routing-pattern-for-html6-htmx-applications.html">[Next: hypermedia; a routing pattern for HTMX applications]</a></p>
+
+      </div>
+    </article>
+  </body>
+<html>
