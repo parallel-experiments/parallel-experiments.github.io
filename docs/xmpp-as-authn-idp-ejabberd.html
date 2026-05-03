@@ -338,7 +338,7 @@ def home(...):
     return f&quot;hello {who}&quot;
 </code></pre>
 <h2 id="all-together">All together <a class="heading-anchor-permalink" href="#all-together">#</a></h2>
-<p>I’ve put up <a href="github.com/lukal-x/xmpp-as-authn-idp">a code repository</a> which does all of this in one go, I’d used <code>flask-smorest</code> instead of Flask (same framework essentially with a bit extra) so you can start the containerized setup and navigate your browser to <a href="http://localhost:5005/docs">http://localhost:5005/docs</a> to see the behavior via Swagger.</p>
+<p>I’ve put up <a href="https://github.com/lukal-x/xmpp-as-authn-idp">a code repository</a> which does all of this in one go, I’d used <code>flask-smorest</code> instead of Flask (same framework essentially with a bit extra) so you can start the containerized setup and navigate your browser to <a href="http://localhost:5005/docs">http://localhost:5005/docs</a> to see the behavior via Swagger.</p>
 <p>You have to uncomment the jabber 5280 port exposure in order to see the account registration screens, it’s commented out because by default we don’t want to expose this willy nilly.</p>
 <p>Later on it would also be wise to isolate <code>mod_register_web</code> and provide it on its own port/listener.</p>
 <p>[<a href="datomic-rest-api-how-to-use-datomic-from-python-or-php-ruby-go.html">Next: Datomic REST API, how to use Datomic from Python or PHP, Ruby, Go</a>]</p>
