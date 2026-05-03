@@ -1,0 +1,349 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+      }
+
+      blockquote {
+	  padding: 1em;
+	  background: aliceblue;
+      }
+      .container {
+	  margin: 10%;
+	  max-width: 600px;
+      }
+      pre:has(code) {
+	  background: #888;
+	  overflow: auto;
+      }
+      @media (prefers-color-scheme: dark) {
+	  body {
+	      color: #eee;
+              background: #333;                 
+	  }
+
+	  a {
+	      color: #fff;
+	  }
+
+	  a:visited {
+	      color: #bbb;
+	  }
+
+	  blockquote {
+	      background: #444;
+	  }
+      }
+    </style>
+  </head>
+  <body>
+    <article>
+      <div class="container">
+	<h1 id="xmpp-as-an-authentication-method%2C-ejabberd-as-an-identity-and-authentication-service">XMPP as an authentication method, ejabberd as an identity and authentication service <a class="heading-anchor-permalink" href="#xmpp-as-an-authentication-method%2C-ejabberd-as-an-identity-and-authentication-service">#</a></h1>
+<blockquote>
+<p>DISCLAIMER: the minimal setup here assumes you’re not exposing your XMPP server to literally anyone other than your own client code</p>
+</blockquote>
+<p>To start from the very top, the reason why I am even thinking about this is a question of incentivizing operators of decentralized tech.</p>
+<p>In short the topic at hand is - you have the best, single most elegantly designed decentralized technology, and it has all this potential to solve so many of these problems in an efficient way … but it either doesn’t get enough adoption or it does but only a part of it after a monopolized entity discovers it and coopts it for their own purposes.</p>
+<p>I won’t recount all the various ways this played out in the past, RSS, P2P file sharing, federated social media, cryptocurrencies.</p>
+<p>So I started an <a href="https://bsky.app/profile/lukal-x.bsky.social/post/3mftridavb22k">uncapped twitter thread</a> which focuses on what it takes to get people to participate in a decentralized system as operators, the people who run the services for others to use; and in a very blunt way too - what would these operators stand to gain other than pride in an ethical/principled undertaking?</p>
+<h2 id="xmpp">XMPP <a class="heading-anchor-permalink" href="#xmpp">#</a></h2>
+<p>Decentralized, extensible, built on open standards, designed as SMTP but for chat - anyone can run a server and talk to anyone else.</p>
+<p>XMPP got a fair amount of adoption, most tech giants built their chat services using XMPP - but once a significant number of users were present within their own walled gardens the openness stopped.</p>
+<p>The brief on XMPP as a procol is if you imagine e-mail as your message making 4 hops to reach its destination:</p>
+<ol>
+<li>clientA -&gt; server1</li>
+<li>server1 -&gt; server2</li>
+<li>server2 -&gt; server3</li>
+<li>server3 -&gt; clientB</li>
+</ol>
+<p>then XMPP is your message making one singular hop through continuous connections:</p>
+<ol>
+<li>clientA &lt;- XML stream -&gt; serverA &lt;- XML stream -&gt; serverB &lt;- XML stream -&gt; clientB</li>
+</ol>
+<h2 id="capabilities">Capabilities <a class="heading-anchor-permalink" href="#capabilities">#</a></h2>
+<p>One could write for days about things that are doable via XMPP (think: any kind of communication that you might need between two devices) however some of the more interesting ones are the various IAM authentication (authn for short) and authorization (authz for short) capabilities for</p>
+<ul>
+<li>Oauth over XMPP thanks to which your chat app can log you in with your Google account (for example)</li>
+<li>in reverse, Oauth client login (experimental XEP-0493 at 0.1.1 (2025-03-31)) which would let you login to various apps with your chat account</li>
+<li>it’s a stretch but hypothetically one could leverage XMPP for RBAC (role based access control) by creating and checking someone’s role/affiliation in per-role <code>groupchat</code>s, and</li>
+<li>ultimately use of SASL for straightforward authentication of clients to servers and federated authn for identity provider (IdP for short) purposes</li>
+</ul>
+<p>the last one being relevant to what I’m proposing as a way to make XMPP more popular: if you’re making a software system of any kind that would benefit from a plug-n-play authn layer, just install &amp; configure ejabberd and you’re set.</p>
+<p><strong>Even more so</strong> if your system will ever have a need for a robust messaging and/or presence backbone.</p>
+<h2 id="what-is-jabber%2C-what-is-ejabberd">What is Jabber, what is ejabberd <a class="heading-anchor-permalink" href="#what-is-jabber%2C-what-is-ejabberd">#</a></h2>
+<p>Jabber <em>is</em> XMPP, or, the other way around, XMPP <em>is</em> Jabber.
+XMPP is a format standardization of the protocol which had evolved within the Jabber project.</p>
+<p>However Jabber is now technically just one of many implementations of XMPP.
+There’s also Snikket, there’s Prosody, Tigase, OpenFire, etc.</p>
+<p><code>ejabberd</code> is the name of the actual server daemon you deal with when you install the Jabber project somewhere.</p>
+<p>This document focuses on Jabber only because I’ve experimented with this against Jabber and was able to find relevant information.</p>
+<p>I’d expect any of the other implementations have similar ways to accomplish the same.</p>
+<p>Can’t say for sure yet though.</p>
+<h2 id="what-is-bosh-and-why-does-it-matter">What is BOSH and why does it matter <a class="heading-anchor-permalink" href="#what-is-bosh-and-why-does-it-matter">#</a></h2>
+<p>So the way XMPP works is it establishes an XML stream between two devices.
+Once two devices can shoot little bits (called stanzas in XMPP ecosystem) of XML to each other they can do a whole lot just by knowing what the other party is supposed to do based off the protocol specification and its various extensions.</p>
+<p>And BOSH? Bidirectional streams over synchronous HTTP.
+It’s just a way for you to use an HTTP request-response cycle to accomplish the same.</p>
+<p>A bit clunkier and a bit more bloated than XML streams, sure, but it does its job <strong>and drastically reduces the complexity of the whole thing</strong>.</p>
+<h2 id="configuring-ejabberd">Configuring ejabberd <a class="heading-anchor-permalink" href="#configuring-ejabberd">#</a></h2>
+<p>There’s two things we need here. The first one is optional yes but you might need it in some of the scenarios in which you deploy this setup: ejabberd account registration and the accompanying web app.</p>
+<p>The second one is enabling BOSH and will follow right after.</p>
+<h3 id="account-registration-in-ejabberd.yml">Account registration in ejabberd.yml <a class="heading-anchor-permalink" href="#account-registration-in-ejabberd.yml">#</a></h3>
+<p>Jabber has modules, and you can configure them in the <code>modules</code> section, namely <code>mod_register</code> which uses <code>trusted_network</code> for the <code>ip_access</code> property out of the box (set to loopback by default) and depending on your setup you might want to allow public registration.</p>
+<p>Remember please to put it behind a verification, a captcha or an OTP/MFA of some kind.
+The comment block about the Jabber SPAM Manifesto that <code>ejabberd.yml</code> has out of the box is about this.
+The least you can do is toggle built-in CATPCHA on in the configuration (ensure you have <code>imagemagick</code> installed too), which consists of three moving parts:</p>
+<ol>
+<li>the main thing to configure in <code>ejabberd.yml</code> are the <code>captcha_cmd</code> (a working <code>captcha.sh</code> comes bundled with ejabberd) and <code>captcha_url</code> properties - these are at the root level of YAML indentation &amp; not part of other properties</li>
+<li>adding <code>/captcha</code> to the <code>request_handlers</code> list</li>
+<li>adding a <code>captcha_protected</code> gate to the <code>mod_register</code> configuration.</li>
+</ol>
+<p>The other two you will find throughout the remaining config examples in this document but the first part is as follows:</p>
+<pre><code class="language-yaml">...
+hosts: ...
+
+captcha_cmd: /opt/ejabberd/bin/captcha.sh
+captcha_url: http://localhost:5280/captcha
+...
+</code></pre>
+<p>Below you can see an example setup allowing anyone who can access the HTTP server to register an account.</p>
+<pre><code class="language-yaml">...
+
+
+modules:
+...
+  mod_register:
+    ## Only accept registration requests from the &quot;trusted&quot;
+    ## network (see access_rules section above).
+    ## Think twice before enabling registration from any
+    ## address. See the Jabber SPAM Manifesto for details:
+    ## https://github.com/ge0rg/jabber-spam-fighting-manifesto
+    captcha_protected: true
+    ip_access:
+      allow: all
+...
+
+</code></pre>
+<p>Then in the <code>listen</code> section find the block pointing to <code>port: PORT_HTTP</code>.</p>
+<blockquote>
+<p>NOTE: Either the TLS one or the one without TLS (there’s a block for each) depending on whtether you’re setting this up for prod or just testing it out locally.</p>
+</blockquote>
+<p>Within you will find a <code>request_handlers</code> subsection to which you have to add a path pointing to <code>mod_register_web</code>:</p>
+<pre><code class="language-yaml">...
+
+  listen:
+    ...
+    -
+      port: PORT_HTTP
+      ip: &quot;::&quot;
+      module: ejabberd_http
+      request_handlers:
+        /admin: ejabberd_web_admin
+        /captcha: ejabberd_captcha
+        /.well-known/acme-challenge: ejabberd_acme
+        /: mod_register_web
+...
+</code></pre>
+<blockquote>
+<p>NOTE: see how we put the path at the bottom - this is because they are evaluated in the order they appear in and none of the other paths following it will work if you put the root path (just the slash, /) anywhere other than at the very end</p>
+</blockquote>
+<p>To reconfigure the running server use</p>
+<pre><code class="language-bash">ejabberctl reload_config
+</code></pre>
+<p>Then all what’s left is toggling BOSH on.</p>
+<h3 id="configuring-bosh-in-ejabberd.yml">Configuring BOSH in ejabberd.yml <a class="heading-anchor-permalink" href="#configuring-bosh-in-ejabberd.yml">#</a></h3>
+<p><code>mod_bosh</code> should already be enabled by default, you will probably find something like</p>
+<p><code>mod_bosh: {}</code> in the <code>modules</code> section.</p>
+<p>The accessible HTTP location however has to be defined, much like the <code>mod_register_web</code> mapping to <code>/</code>, we want to enable the e.g. <code>/bosh</code> path on the HTTP handler:</p>
+<pre><code class="language-yaml">...
+  listen:
+    ...
+    -
+      port: PORT_HTTP
+      ip: &quot;::&quot;
+      module: ejabberd_http
+      request_handlers:
+        /admin: ejabberd_web_admin
+        /bosh: mod_bosh
+        /captcha: ejabberd_captcha
+        /.well-known/acme-challenge: ejabberd_acme
+        /: mod_register_web
+</code></pre>
+<p>and that should be it.
+Reload or restart your setup and you should be able to talk to your ejabberd settup via HTTP/BOSH.</p>
+<h2 id="the-client">The client <a class="heading-anchor-permalink" href="#the-client">#</a></h2>
+<p>Simplest possible example of this I can think of is a Python/Flask hello world web application which lets you login with your XMPP account and when your login is successful it says “hello $username” instead of “hello world” as long as your Flask session cookie hadn’t expired.</p>
+<p>This means with the configuration above, someone is able to register a new XMPP account then login to your Flask web application/system with their XMPP credentials.</p>
+<p>Arguably with the simplest approach (using SASL PLAIN) your application/system now becomes an attack surface due to handling actual credentials however while this is supposed to be a demo you have numerous valid approaches to take to harden your setup and even have your publicly exposed XMPP server acting as a federated IdP for your and other systems.</p>
+<p>Or the inverse, allow XMPP authentication to your application/system from literally any XMPP user.</p>
+<p>So, back to the client.</p>
+<h2 id="python-client-for-xmpp-bosh-(authn)">Python client for XMPP BOSH (authn) <a class="heading-anchor-permalink" href="#python-client-for-xmpp-bosh-(authn)">#</a></h2>
+<p>I tried to make it as small and dependency-free as possible because I knew it could be done, honestly. I’d done it with Clojure a couple of years ago and it amounted to 3-4 functions and no additional dependencies.</p>
+<p>I found and read through <a href="https://github.com/pelletier/boshclient">https://github.com/pelletier/boshclient</a> for inspiration before I set to write a Python(3) version and ended up doing something very similar:</p>
+<pre><code class="language-python">from dataclasses import dataclass
+from http.client import HTTPConnection
+from xml.dom import minidom
+import base64
+import random
+import typing
+import urllib.parse
+
+
+@dataclass
+class Client:
+    conn: HTTPConnection
+
+    @classmethod
+    def create(cls, host: str, port: int):
+        return Client(conn=HTTPConnection(host, port))
+
+    def post(
+        self, path: str, params: dict | None = None, headers: dict | None = None
+    ) -&gt; tuple[int, typing.Any]:
+        if params is not None:
+            if isinstance(params, dict):
+                params = urllib.parse.urlencode(params)
+
+        self.conn.request(&quot;POST&quot;, path, params or {}, headers or {})
+        resp = self.conn.getresponse()
+        return resp.status, resp.read().decode(&quot;utf-8&quot;)
+
+
+@dataclass
+class Bosh:
+
+    client: Client
+    rid: int
+    sid: str | None
+
+    @classmethod
+    def create(cls):
+        raise NotImplementedError
+
+    @classmethod
+    def greet(cls, client: Client):
+        bosh = Bosh(client=client, rid=random.randint(0, 999**2), sid=None)
+        stanza = minidom.Document()
+
+        body = stanza.createElement(&quot;body&quot;)
+        body.setAttribute(&quot;rid&quot;, str(bosh.rid))
+        body.setAttribute(&quot;to&quot;, client.conn.host)
+        body.setAttribute(&quot;xml:lang&quot;, &quot;en&quot;)
+        body.setAttribute(&quot;wait&quot;, &quot;60&quot;)
+        body.setAttribute(&quot;hold&quot;, &quot;1&quot;)
+        body.setAttribute(&quot;content&quot;, &quot;text/xml; charset=utf-8&quot;)
+        body.setAttribute(&quot;ver&quot;, &quot;1.6&quot;)
+
+        body.appendChild(stanza.createTextNode(&quot;&quot;))
+
+        stanza.appendChild(body)
+
+        doc = bosh.exchange(stanza)
+        sid = doc.getAttribute(&quot;sid&quot;)
+
+        bosh.sid = sid
+
+        return bosh
+
+    def exchange(self, stanza: minidom.Document) -&gt; minidom.Document:
+        self.rid += 1
+        pretty = stanza.toprettyxml()
+        _, res = self.client.post(&quot;/bosh&quot;, pretty, {&quot;content-type&quot;: &quot;application/xml&quot;})
+        return minidom.parseString(res).documentElement
+
+    def login(self, usr: str, pwd: str) -&gt; str | None:
+        stanza = minidom.Document()
+
+        body = stanza.createElement(&quot;body&quot;)
+        body.setAttribute(&quot;rid&quot;, str(self.rid))
+        body.setAttribute(&quot;sid&quot;, self.sid)
+        body.setAttribute(&quot;xmlns&quot;, &quot;http://jabber.org/protocol/httpbind&quot;)
+
+        auth = stanza.createElement(&quot;auth&quot;)
+        auth.setAttribute(&quot;xmlns&quot;, &quot;urn:ietf:params:xml:ns:xmpp-sasl&quot;)
+        auth.setAttribute(&quot;mechanism&quot;, &quot;PLAIN&quot;)
+
+        auth.appendChild(
+            stanza.createTextNode(
+                base64.b64encode(bytes(f&quot;\0{usr}\0{pwd}&quot;, &quot;utf-8&quot;)).decode(&quot;utf-8&quot;)
+            )
+        )
+
+        body.appendChild(auth)
+        stanza.appendChild(body)
+        error: str | None = None
+
+        _ = self.exchange(stanza)
+
+        if _:
+            _ = next(iter(_.getElementsByTagName(&quot;failure&quot;)), None)
+            if _:
+                _ = next(iter(_.getElementsByTagName(&quot;text&quot;)), None)
+                error = _.firstChild.nodeValue
+
+        return error
+
+
+if __name__ == &quot;__main__&quot;:
+    # for example
+
+    c = Client.create(&quot;localhost&quot;, 5280)
+    b = Bosh.greet(c)
+
+    print(b.login(usr=&quot;user1&quot;, pwd=&quot;user1&quot;))
+
+</code></pre>
+<p>This is the bare minimum one needs to talk to an XMPP server via BOSH without 3rd party dependencies.</p>
+<p>The idea is to either expand the <code>Bosh</code> class with additional fundamental XMPP behaviors or simply inherit from it in a custom class I can use as a stand in for the subset of behaviors I might need.</p>
+<p>Then I can construct and parse XML stanzas much the same way you see it done in the handshake/login implemented here.</p>
+<p>In here you will find the simplest HTTP client I could think of which you can pass into your <code>Bosh</code> client, and the BOSH client itself can be started with an XMPP handshake and session then used to perform a login against a live XMPP server.</p>
+<p>No error means the login succeeded (yeah this can be improved I know).</p>
+<p>In the Flask app then you can use the client to have a login endpoint perform the actual login like</p>
+<pre><code class="language-python">...
+from flask import redirect, session
+
+...
+@app.route(&quot;/login&quot;)
+def login(...):
+    ...
+    client = Client.create(BOSH_HOST, BOSH_PORT)
+    bosh = Bosh.greet(client)
+    ...
+  
+    error: str | None = bosh.login(
+        username, password
+    )
+  
+    if error is not None:
+        raise Exception(error)
+	
+    session[&quot;username&quot;] = username
+  
+    return redirect(&quot;/&quot;)
+
+</code></pre>
+<p>and elsewhere, then, use the identity that was verified by XMPP like so</p>
+<pre><code class="language-python">...
+
+def home(...):
+    ...
+    who = &quot;world&quot;
+    if &quot;username&quot; in session:
+        who = session[&quot;username&quot;]
+	
+    return f&quot;hello {who}&quot;
+</code></pre>
+<h2 id="all-together">All together <a class="heading-anchor-permalink" href="#all-together">#</a></h2>
+<p>I’ve put up <a href="github.com/lukal-x/xmpp-as-authn-idp">a code repository</a> which does all of this in one go, I’d used <code>flask-smorest</code> instead of Flask (same framework essentially with a bit extra) so you can start the containerized setup and navigate your browser to <a href="http://localhost:5005/docs">http://localhost:5005/docs</a> to see the behavior via Swagger.</p>
+<p>You have to uncomment the jabber 5280 port exposure in order to see the account registration screens, it’s commented out because by default we don’t want to expose this willy nilly.</p>
+<p>Later on it would also be wise to isolate <code>mod_register_web</code> and provide it on its own port/listener.</p>
+<p>[<a href="datomic-rest-api-how-to-use-datomic-from-python-or-php-ruby-go.html">Next: Datomic REST API, how to use Datomic from Python or PHP, Ruby, Go</a>]</p>
+
+      </div>
+    </article>
+  </body>
+<html>
